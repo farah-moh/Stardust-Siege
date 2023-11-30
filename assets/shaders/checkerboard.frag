@@ -12,5 +12,15 @@ uniform int size = 32;
 uniform vec3 colors[2];
 
 void main(){
-    frag_color = vec4(colors[0], 1.0);
+    
+    // the position of the pixel in the checkboard
+    vec2 pos = floor(gl_FragCoord.xy / size); //gl_FragCoord: contains the window-relative coordinates of the current fragment
+    
+    // if the sum of the x and y coordinates of the pixel is even, then the color is colors[0]
+    // otherwise, the color is colors[1]
+    if(mod(pos.x+pos.y,2.0) == 0.0){
+        frag_color=vec4(colors[0],1.0);
+    }else{
+        frag_color=vec4(colors[1],1.0);
+    }
 }
