@@ -1,6 +1,7 @@
 
 # build directories
 cmake-build-*/
+# ignore build files 
 build/
 out/
 bin/
