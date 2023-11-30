@@ -53,7 +53,7 @@ namespace our
             if (uniform_location_cache.find(name) != uniform_location_cache.end())
             {
                 // If uniform location was previously cahced, return it
-                return uniform_location_cache[name]->second;
+                return uniform_location_cache[name];
             }
             /* Call glGetUniformLocation, convert string name to a null terminated c_str to match the function arguments
             both GLchar* & char * are null terminated character arrays
