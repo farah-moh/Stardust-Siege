@@ -2,7 +2,7 @@
 #define SHADER_HPP
 
 #include <string>
-
+#include <map>
 #include <glad/gl.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -43,14 +43,14 @@ namespace our {
             //TODO: (Req 1) Return the location of the uniform with the given name
 
             // If uniform location wasn't previously cahced, get it and cache it
-            if(uniform_location_cache.find(name) == m.end()) {
+            if(uniform_location_cache.find(name) == uniform_location_cache.end()) {
                 /* Call glGetUniformLocation, convert string name to a null terminated c_str to match the function arguments
                 both GLchar* & char * are null terminated character arrays 
                 */
                 return uniform_location_cache[name] = glGetUniformLocation(program, name.c_str());
             }
             // If uniform location was previously cahced, return it
-            else return uniform_location_cache[name]->second;
+            else return uniform_location_cache[name];
         }
 
         void set(const std::string &uniform, GLfloat value) {
@@ -92,7 +92,7 @@ namespace our {
             //TODO: (Req 1) Send the given 4D vector value to the given uniform
 
             // 4f because its type is vec4, aka a vector of 4 floats (x,y,z,w)
-            glUniform4f(getUniformLocation(uniform), value.x, value.y, value.z, value.w)
+            glUniform4f(getUniformLocation(uniform), value.x, value.y, value.z, value.w);
         }
 
         void set(const std::string &uniform, glm::mat4 matrix) {

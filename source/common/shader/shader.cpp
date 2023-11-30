@@ -73,7 +73,7 @@ bool our::ShaderProgram::link() const {
     // Linking the shader to the program, it verifies it & makes sure it can be executed
     glLinkProgram(program);
 
-    std::string error = checkForLinkingErrors(shader);
+    std::string error = checkForLinkingErrors(program);
     if(error.size())
     {
         std::cout << "Error in shader linking: " << error << std::endl;
