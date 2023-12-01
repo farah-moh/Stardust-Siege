@@ -27,6 +27,16 @@ namespace our
             //  We will draw the sphere from the inside, so what options should we pick for the face culling.
             PipelineState skyPipelineState{};
 
+            // Only pixels that are equal to or closer to the sky than the current fragment will be rendered
+            skyPipelineState.depthTesting.enabled = true;
+            skyPipelineState.depthTesting.function = GL_LEQUAL;
+
+            // We should cull the front faces as we're drawing the sphere from the inside, so the back faces are the ones we'll be seeing
+            skyPipelineState.faceCulling.enabled = true;
+            skyPipelineState.faceCulling.culledFace = GL_FRONT;
+            // ?? no idea
+            skyPipelineState.faceCulling.frontFace = GL_CCW;
+
             // Load the sky texture (note that we don't need mipmaps since we want to avoid any unnecessary blurring while rendering the sky)
             std::string skyTextureFile = config.value<std::string>("sky", "");
             Texture2D *skyTexture = texture_utils::loadImage(skyTextureFile, false);
@@ -54,11 +64,32 @@ namespace our
         {
             // TODO: (Req 11) Create a framebuffer
 
+            // Generating 1 frameBuffer
+            glGenFramebuffers(1, &postprocessFrameBuffer);
+            auto bufferStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+            
+            glBindFramebuffer(GL_FRAMEBUFFER, postprocessFrameBuffer);
+
             // TODO: (Req 11) Create a color and a depth texture and attach them to the framebuffer
             //  Hints: The color format can be (Red, Green, Blue and Alpha components with 8 bits for each channel).
             //  The depth format can be (Depth component with 24 bits).
+            colorTarget = texture_utils::empty(GL_RGBA, windowSize);
+            depthTarget = texture_utils::empty(GL_DEPTH_COMPONENT, windowSize);
+
+            /*
+            GL_FRAMEBUFFER: target enum, buffer for which framebuffer is bound
+            GL_COLOR_ATTACHMENT0: the texture is being attached to the first color attachment point of the framebuffer.
+            GL_TEXTURE_2D: specifies what type of texture is expected in the texture parameter
+            colorTarget->getOpenGLName(): name of the texture object to attach
+            0: minmap level
+            */
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, colorTarget->getOpenGLName(), 0);
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthTarget->getOpenGLName(), 0);
+
+
 
             // TODO: (Req 11) Unbind the framebuffer just to be safe
+            glBindFramebuffer(GL_FRAMEBUFFER,0);
 
             // Create a vertex array to use for drawing the texture
             glGenVertexArrays(1, &postProcessVertexArray);
@@ -183,6 +214,7 @@ namespace our
         if (postprocessMaterial)
         {
             // TODO: (Req 11) bind the framebuffer
+            glBindFramebuffer(GL_FRAMEBUFFER,postprocessFrameBuffer);
         }
 
         // TODO: (Req 9) Clear the color and depth buffers
@@ -204,21 +236,32 @@ namespace our
         if (this->skyMaterial)
         {
             // TODO: (Req 10) setup the sky material
+            this->skyMaterial->setup();
 
             // TODO: (Req 10) Get the camera position
-
-            // TODO: (Req 10) Create a model matrix for the sy such that it always follows the camera (sky sphere center = camera position)
+            glm::vec3 cameraPosition = camera->getOwner()->getLocalToWorldMatrix() * glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+            
+            // TODO: (Req 10) Create a model matrix for the sky such that it always follows the camera (sky sphere center = camera position)
+            
+            // just translate the sky by camera position
+            glm::mat4 modelMatrix = glm::translate(glm::mat4(1.0f), cameraPosition);
 
             // TODO: (Req 10) We want the sky to be drawn behind everything (in NDC space, z=1)
             //  We can acheive the is by multiplying by an extra matrix after the projection but what values should we put in it?
+
+            // We can achieve this by scaling the z by 0, then translating by 1, which basically means that we force z to be 1
             glm::mat4 alwaysBehindTransform = glm::mat4(
                 1.0f, 0.0f, 0.0f, 0.0f,
                 0.0f, 1.0f, 0.0f, 0.0f,
-                0.0f, 0.0f, 1.0f, 0.0f,
-                0.0f, 0.0f, 0.0f, 1.0f);
+                0.0f, 0.0f, 0.0f, 0.0f,
+                0.0f, 0.0f, 1.0f, 1.0f);
             // TODO: (Req 10) set the "transform" uniform
 
+            // We need to multiply by modelMatrix first, then by VP, then at last by the matrix that corrects depth
+            skyMaterial->shader->set("transform", alwaysBehindTransform * VP * modelMatrix);
+
             // TODO: (Req 10) draw the sky sphere
+            skySphere->draw();
         }
         // TODO: (Req 9) Draw all the transparent commands
         //  Don't forget to set the "transform" uniform to be equal the model-view-projection matrix for each render command
@@ -234,9 +277,13 @@ namespace our
         if (postprocessMaterial)
         {
             // TODO: (Req 11) Return to the default framebuffer
+            glBindFramebuffer(GL_FRAMEBUFFER,0);
 
             // TODO: (Req 11) Setup the postprocess material and draw the fullscreen triangle
+            postprocessMaterial->setup();
+            glBindVertexArray(postProcessVertexArray);
+            glDrawArrays(GL_TRIANGLES, 0, 3);
+            glBindVertexArray(0);
         }
     }
-
 }
