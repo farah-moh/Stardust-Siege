@@ -1,6 +1,5 @@
 #ifndef SHADER_HPP
 #define SHADER_HPP
-
 #include <string>
 #include <map>
 #include <glad/gl.h>
