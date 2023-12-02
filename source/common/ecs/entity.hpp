@@ -74,17 +74,17 @@ namespace our {
             // If found, delete the found component and remove it from the components list
             for (auto it = components.begin(); it != components.end(); it++)
             {
-                Component* component = *it;
-                T* temp = dynamic_cast<T*>(component);
+                Component* component = *it; //derefencing the pointer to get the component
+                T* temp = dynamic_cast<T*>(component); //attempting to cast
                 if(temp){
-                    delete component;
-                    components.erase(it);
+                    delete component; //delete the container
+                    components.erase(it); //delete the thing pointed to by the iterator
                     return;
                 } 
             }
         }
 
-        // This template method searhes for a component of type T and deletes it
+        // This template method searhes for a component of type T and deletes it, could've used it lol
         void deleteComponent(size_t index){
             auto it = components.begin();
             std::advance(it, index);

@@ -65,7 +65,8 @@ namespace our {
         //This deletes all entities in the world
         void clear(){
             //TODO: (Req 8) Delete all the entites and make sure that the containers are empty
-            for(auto entity : entities) delete entity;
+            for(auto entity : entities) delete entity; //deleting the actual entities
+            // clearing containers
             markedForRemoval.clear();
             entities.clear();
         }

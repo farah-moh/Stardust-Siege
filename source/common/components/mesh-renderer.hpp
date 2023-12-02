@@ -10,6 +10,7 @@ namespace our {
     // This component denotes that any renderer should draw the given mesh using the given material at the transformation of the owning entity.
     class MeshRendererComponent : public Component {
     public:
+        // This class is inherited from component, and for each drawable entity, we add this component to it
         Mesh* mesh; // The mesh that should be drawn
         Material* material; // The material used to draw the mesh
 

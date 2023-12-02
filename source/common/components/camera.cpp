@@ -39,6 +39,8 @@ namespace our {
         glm::vec3 eye = M * glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
         glm::vec3 center = M * glm::vec4(0.0f, 0.0f, -1.0f, 1.0f);
         glm::vec3 up = M * glm::vec4(0.0f, 1.0f, 0.0f, 0.0f);
+        // this function calculates the view matrix after being given the eye, center and up 
+        // it calculates the right vector, then multiplies it by a translation matrix by eye point
         return glm::lookAt(eye, center, up);
         /*
         1- We calculate eye, center and up location relative to the world state by multiplying by world transformation matrix.
@@ -55,16 +57,20 @@ namespace our {
         // It takes left, right, bottom, top. Bottom is -orthoHeight/2 and Top is orthoHeight/2.
         // Left and Right are the same but after being multiplied by the aspect ratio
         // For the perspective camera, you can use glm::perspective
+        // Calculating the aspect ratio
         float aspectRatio = 1.0f * viewportSize.x/viewportSize.y;
+
+        // Orthographic Projection
         if(cameraType == CameraType::ORTHOGRAPHIC) {
 
             float bottom = -orthoHeight / 2;
             float top = orthoHeight / 2;
             float left = aspectRatio * bottom;
             float right = aspectRatio * top;
-
             return glm::ortho(left, right, bottom, top);
         }
+
+        // Perspective Projection
         return glm::perspective(fovY, aspectRatio, near, far);
     }
 }

@@ -41,7 +41,7 @@ namespace our {
     // This material adds two uniforms (besides the tint from Tinted Material)
     // The uniforms are:
     // - "tex" which is a Sampler2D. "texture" and "sampler" will be bound to it.
-    // - "alphaThreshold" which defined the alpha limit below which the pixel should be discarded
+    // - "alphaThreshold" which defined the alpha limit below which the pixel should be discarded, because it's considered transparent
     // An example where this material can be used is when the object has a texture
     class TexturedMaterial : public TintedMaterial {
     public:
