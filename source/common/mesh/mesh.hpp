@@ -55,15 +55,17 @@ namespace our {
             // enable vertex attribute arrays
             // ATTRIB_LOC_POSITION: attribute location
             glEnableVertexAttribArray(ATTRIB_LOC_POSITION);
-            // set vertex attribute pointers
+            // set vertex attribute pointers to make him understand how to read pixels from the buffer.
             // ATTRIB_LOC_POSITION: attribute location
             // 3: no. of components per attribute
             // GL_FLOAT: type of data
             // GL_FALSE: whether data should be normalized
-            // sizeof(Vertex): stride
-            // (void*)offsetof(Vertex, position): pointer to offset
+            // sizeof(Vertex): stride size
+            // (void*)offsetof(Vertex, position): pointer to offset --> could be 0 here because position is the first element in vertix.
             glVertexAttribPointer(ATTRIB_LOC_POSITION, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, position));
 
+            // here the type is not FL_FLOAT, it is GL_UNSIGNED_BYTE because color is an unsigned int i.e. 1 byte 0->255
+            // Normalize value is GL_TRUE because to normalize values of 0 -> 255 to 0 -> 1 so we can represent all colors with 1 byte u_int
             glEnableVertexAttribArray(ATTRIB_LOC_COLOR);
             glVertexAttribPointer(ATTRIB_LOC_COLOR, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Vertex), (void*)offsetof(Vertex, color));
 
