@@ -9,16 +9,18 @@ our::Texture2D* our::texture_utils::empty(GLenum format, glm::ivec2 size){
     our::Texture2D* texture = new our::Texture2D();
     //TODO: (Req 11) Finish this function to create an empty texture with the given size and format
     texture->bind(); // bind texture to GL_TEXTURE_2D texture target
-    //creating an empty texture with specific format and size
-    // second argument indicates mipmap level
-    //third argument represents the internal format of the texture
-    //fourth and fifth argument represents size of the texture
-    //sixth argument represents border of the texture (it is always 0 )
-    //seventh argument represents pixel format of the pixel data
-    //eight argument represents data type of pixel data
-    //ninth argument represents a pointer to image data (in this case it is null or 0 which means the texture is empty)
+    // creating an empty texture with specific format and size
+    // GL_TEXTURE_2D: The target texture type, in this case, a 2D texture.
+    // 0: The mipmap level, 0 for the base level.
+    // format: The internal format of the texture, specifying the color format and data type.
+    // size.x: The width of the texture.
+    // size.y: The height of the texture.
+    // 0: The border width, always 0 for non-border textures.
+    // format: The pixel format of the texture, matching the internal format.
+    // GL_UNSIGNED_BYTE: The data type of the pixel data, unsigned byte.
+    // 0: A pointer to the image data. In this case, it is set to 0, indicating an empty texture.
     glTexImage2D(GL_TEXTURE_2D,0,format,size.x,size.y,0,format,GL_UNSIGNED_BYTE,0); // creating an empty texture 
-    texture->unbind(); //unbind the texture to prevent accidentally modifying the wrong texture (this is optional)
+    texture->unbind(); //unbind the texture to prevent accidentally modifying the wrong texture (this is a good practice)
     return texture;
 }
 
