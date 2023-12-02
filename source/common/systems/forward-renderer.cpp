@@ -23,7 +23,7 @@ namespace our
             skyShader->link();
 
             // TODO: (Req 10) Pick the correct pipeline state to draw the sky
-            //  Hints: the sky will be draw after the opaque objects so we would need depth testing but which depth funtion should we pick?
+            //  Hints: the sky will be drawn after the opaque objects so we would need depth testing but which depth funtion should we pick?
             //  We will draw the sphere from the inside, so what options should we pick for the face culling.
             PipelineState skyPipelineState{};
 
@@ -35,7 +35,7 @@ namespace our
             skyPipelineState.faceCulling.enabled = true;
             skyPipelineState.faceCulling.culledFace = GL_FRONT;
             // ?? no idea
-            skyPipelineState.faceCulling.frontFace = GL_CCW;
+            // skyPipelineState.faceCulling.frontFace = GL_CCW;
 
             // Load the sky texture (note that we don't need mipmaps since we want to avoid any unnecessary blurring while rendering the sky)
             std::string skyTextureFile = config.value<std::string>("sky", "");
@@ -64,8 +64,10 @@ namespace our
         {
             // TODO: (Req 11) Create a framebuffer
 
-            // Generating 1 frameBuffer
+            // Generating 1(no of buffers) frameBuffer
+            // This will be useful for post-processing effects, such as applying filters or bloom
             glGenFramebuffers(1, &postprocessFrameBuffer);
+            // This code to check the status of the FBO and ensures it is complete before proceeding to use it for rendering
             auto bufferStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
             
             glBindFramebuffer(GL_FRAMEBUFFER, postprocessFrameBuffer);
@@ -73,20 +75,24 @@ namespace our
             // TODO: (Req 11) Create a color and a depth texture and attach them to the framebuffer
             //  Hints: The color format can be (Red, Green, Blue and Alpha components with 8 bits for each channel).
             //  The depth format can be (Depth component with 24 bits).
+            // Creating empty texture with RGBA as an interal format, 
+            // which indicates a texture that stores red, green, blue, and alpha color components
             colorTarget = texture_utils::empty(GL_RGBA, windowSize);
+            // Creating empty texture with DEPTH_COMPONENT as an interal format,
+            // which indicates a texture that stores depth information only
             depthTarget = texture_utils::empty(GL_DEPTH_COMPONENT, windowSize);
 
             /*
-            GL_FRAMEBUFFER: target enum, buffer for which framebuffer is bound
-            GL_COLOR_ATTACHMENT0: the texture is being attached to the first color attachment point of the framebuffer.
-            GL_TEXTURE_2D: specifies what type of texture is expected in the texture parameter
-            colorTarget->getOpenGLName(): name of the texture object to attach
-            0: minmap level
+                GL_FRAMEBUFFER: target enum, buffer for which framebuffer is bound
+                GL_COLOR_ATTACHMENT0: the texture is being attached to the first color attachment point of the framebuffer.
+                GL_TEXTURE_2D: specifies what type of texture is expected in the texture parameter
+                colorTarget->getOpenGLName(): name of the texture object to attach
+                0: mipmap level
             */
+            // This means that any rendering operations performed while the FBO is bound will write their color information to the colorTarget texture
             glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, colorTarget->getOpenGLName(), 0);
+            // This means that any depth testing performed while the FBO is bound will use the depth information stored in the depthTarget texture
             glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthTarget->getOpenGLName(), 0);
-
-
 
             // TODO: (Req 11) Unbind the framebuffer just to be safe
             glBindFramebuffer(GL_FRAMEBUFFER,0);
@@ -181,7 +187,8 @@ namespace our
 
         // TODO: (Req 9) Modify the following line such that "cameraForward" contains a vector pointing the camera forward direction
         //  HINT: See how you wrote the CameraComponent::getViewMatrix, it should help you solve this one
-
+        //  calculates the forward direction vector of the camera,
+        //  which is used to determine the direction in which the camera is looking.
         glm::vec3 cameraForward = camera->getOwner()->getLocalToWorldMatrix() * glm::vec4(0.0f, 0.0f, -1.0f, 0.0f);
         std::sort(transparentCommands.begin(), transparentCommands.end(), [cameraForward](const RenderCommand &first, const RenderCommand &second)
                   {
@@ -193,16 +200,22 @@ namespace our
                       return (dot(cameraForward, first.center) > dot(cameraForward, second.center)); });
 
         // TODO: (Req 9) Get the camera ViewProjection matrix and store it in VP
-
+        // Transforms from the world space to camera space (to be respective to the camera)
+        // Then, transforming to the NDC space
         glm::mat4 VP = camera->getProjectionMatrix(windowSize) * camera->getViewMatrix();
 
         // TODO: (Req 9) Set the OpenGL viewport using viewportStart and viewportSize
-
+        // sets the viewport, which is the rectangular region of the window where the rendered image will be displayed.
+        // x: The x-coordinate of the lower-left corner of the viewport in pixels.
+        // y: The y-coordinate of the lower-left corner of the viewport in pixels.
+        // width: The width of the viewport in pixels.
+        // height: The height of the viewport in pixels.
         glViewport(0, 0, windowSize.x, windowSize.y);
 
         // TODO: (Req 9) Set the clear color to black and the clear depth to 1
-
+        // Sets the color that will be used to fill the color buffer when the framebuffer is cleared
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        // Sets the depth that will be used to fill the depth buffer when the framebuffer is cleared
         glClearDepth(1.0f);
 
         // TODO: (Req 9) Set the color mask to true and the depth mask to true (to ensure the glClear will affect the framebuffer)
@@ -218,16 +231,16 @@ namespace our
         }
 
         // TODO: (Req 9) Clear the color and depth buffers
-
+        // Functions to control writing into the color buffer(r,g,b,a) or the depth buffer (depth)
         glClear(GL_COLOR_BUFFER_BIT);
         glClear(GL_DEPTH_BUFFER_BIT);
 
         // TODO: (Req 9) Draw all the opaque commands
         //  Don't forget to set the "transform" uniform to be equal the model-view-projection matrix for each render command
 
-        for (auto command : opaqueCommands)
-        {
+        for (auto command : opaqueCommands) {
             command.material->setup();
+            // This matrix is used by the shader to transform the object's vertices from world space to clip space
             command.material->shader->set("transform", VP * command.localToWorld);
             command.mesh->draw();
         }
@@ -239,6 +252,9 @@ namespace our
             this->skyMaterial->setup();
 
             // TODO: (Req 10) Get the camera position
+            // getting the camera position in the world space
+            // it is typically rendered using a special shader that takes into account the camera position 
+            // to create a realistic illusion of a seamless sky
             glm::vec3 cameraPosition = camera->getOwner()->getLocalToWorldMatrix() * glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
             
             // TODO: (Req 10) Create a model matrix for the sky such that it always follows the camera (sky sphere center = camera position)
@@ -269,6 +285,7 @@ namespace our
         for (auto command : transparentCommands)
         {
             command.material->setup();
+            // This matrix is used by the shader to transform the object's vertices from world space to clip space
             command.material->shader->set("transform", VP * command.localToWorld);
             command.mesh->draw();
         }
@@ -277,6 +294,8 @@ namespace our
         if (postprocessMaterial)
         {
             // TODO: (Req 11) Return to the default framebuffer
+            // This is necessary because the rendering has been targeting the offscreen textures during the main rendering pass. 
+            // Switching back to the default framebuffer ensures that the final output is displayed on the window
             glBindFramebuffer(GL_FRAMEBUFFER,0);
 
             // TODO: (Req 11) Setup the postprocess material and draw the fullscreen triangle
@@ -284,6 +303,7 @@ namespace our
             glBindVertexArray(postProcessVertexArray);
             glDrawArrays(GL_TRIANGLES, 0, 3);
             glBindVertexArray(0);
+            
         }
     }
 }
