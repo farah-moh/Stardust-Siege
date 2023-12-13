@@ -1,0 +1,11 @@
+- Add an opaque screen to not render very far rocks [done]
+
+1- Draw the scene 
+
+2- Collision:
+	- When the rock hits the spaceship, health score decreases [or dies]
+	- When the bullet hits the rock, it explodes and boooom
+	
+3- Player Movement, 2D wasd, space and ctrl inside outside
+
+4- Light

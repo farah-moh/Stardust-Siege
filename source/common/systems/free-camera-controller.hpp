@@ -1,5 +1,5 @@
 #pragma once
-
+#include <iostream>
 #include "../ecs/world.hpp"
 #include "../components/camera.hpp"
 #include "../components/free-camera-controller.hpp"
@@ -10,6 +10,7 @@
 #include <glm/gtc/constants.hpp>
 #include <glm/trigonometric.hpp>
 #include <glm/gtx/fast_trigonometry.hpp>
+#include "../../states/play-state.hpp"
 
 namespace our
 {
@@ -98,6 +99,20 @@ namespace our
             // A & D moves the player left or right 
             if(app->getKeyboard().isPressed(GLFW_KEY_D)) position += right * (deltaTime * current_sensitivity.x);
             if(app->getKeyboard().isPressed(GLFW_KEY_A)) position -= right * (deltaTime * current_sensitivity.x);
+
+            if(app->getKeyboard().isPressed(GLFW_KEY_SPACE)) {
+                auto config = app->getConfig();
+                // if(config) 
+                // std::cout<<config.get<std::string>()<<std::endl;
+                auto bulletJson = config["scene"]["runtimeEntity"][0];
+                bulletJson["position"] = {position[0],position[1],position[2]};
+                //bulletJson["rotation"] = {rotation[0],rotation[1],rotation[2]};
+
+                // std::cout<<bulletJson<<std::endl;
+                auto newEntity = world->add();
+                newEntity->deserialize(bulletJson);
+                newEntity->parent = entity->parent;
+            }
         }
 
         // When the state exits, it should call this function to ensure the mouse is unlocked
