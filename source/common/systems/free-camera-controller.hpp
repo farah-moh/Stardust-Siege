@@ -33,11 +33,15 @@ namespace our
             // First of all, we search for an entity containing both a CameraComponent and a FreeCameraControllerComponent
             // As soon as we find one, we break
             CameraComponent* camera = nullptr;
+            Entity* player = nullptr;
             FreeCameraControllerComponent *controller = nullptr;
             for(auto entity : world->getEntities()){
                 camera = entity->getComponent<CameraComponent>();
                 controller = entity->getComponent<FreeCameraControllerComponent>();
                 if(camera && controller) break;
+            }
+            for(auto entity : world->getEntities()){
+                if(entity->name == "player") player = entity;
             }
             // If there is no entity with both a CameraComponent and a FreeCameraControllerComponent, we can do nothing so we return
             if(!(camera && controller)) return;
@@ -105,13 +109,17 @@ namespace our
                 // if(config) 
                 // std::cout<<config.get<std::string>()<<std::endl;
                 auto bulletJson = config["scene"]["runtimeEntity"][0];
-                bulletJson["position"] = {position[0],position[1],position[2]};
-                //bulletJson["rotation"] = {rotation[0],rotation[1],rotation[2]};
+                auto position = player->localTransform.position;
+                bulletJson["position"] = {position[0],position[1]+1,position[2]};
+                auto rotation = player->localTransform.rotation;
+                bulletJson["rotation"] = {rotation[0],rotation[1],rotation[2]};
 
                 // std::cout<<bulletJson<<std::endl;
                 auto newEntity = world->add();
                 newEntity->deserialize(bulletJson);
-                newEntity->parent = entity->parent;
+                newEntity->parent = player->parent;
+                //newEntity->localTransform = player->localTransform;
+                newEntity->name = "bullet";
             }
         }
 

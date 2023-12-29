@@ -176,6 +176,7 @@
                 ],
                 "children": [
                     {
+                        "name": "player",
                         "position": [0, -1, -3],
                         "rotation": [0, -90, 0],
                         "scale": [0.5, 0.5, 0.5],
@@ -307,6 +308,7 @@
             //     ]
             // },
             {
+                "name": "asteroid",
                 "position": [0, 5, -60],
                 "rotation": [45, 45, 0],
                 "scale": [5, 5, 5],
@@ -326,9 +328,10 @@
         ],
         "runtimeEntity" : [
             {
-                "position": [0, 5, -20],
+                "name": "bullet",
+                "position": [10, 10, 10],
                 "rotation": [45, 45, 0],
-                "scale": [1, 1, 1],
+                "scale": [7, 7, 7],
                 "components": [
                     {
                         "type": "Mesh Renderer",
@@ -337,8 +340,8 @@
                     },
                     {
                         "type": "Movement",
-                        "angularVelocity": [0, 90, 0],
-                        "linearVelocity": [0, 0, -5]
+                        "angularVelocity": [0, 0, 0],
+                        "linearVelocity": [0, 0, -3]
                     }
                 ]
             }
