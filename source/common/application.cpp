@@ -1,5 +1,4 @@
 #include "application.hpp"
-
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -16,6 +15,7 @@
 #define IMGUI_IMPL_OPENGL_LOADER_GLAD2
 #include <imgui_impl/imgui_impl_glfw.h>
 #include <imgui_impl/imgui_impl_opengl3.h>
+using namespace std;
 
 #if !defined(NDEBUG)
 // If NDEBUG (no debug) is not defined, enable OpenGL debug messages
@@ -204,6 +204,7 @@ int our::Application::run(int run_for_frames) {
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO();
+    ImFont *font = io.Fonts->AddFontFromFileTTF("assets\\fonts\\Pixellettersfull-BnJ5.ttf", 100.0f);
     ImGui::StyleColorsDark();
 
     // Initialize ImGui for GLFW and OpenGL
@@ -250,6 +251,33 @@ int our::Application::run(int run_for_frames) {
         ImGui::NewFrame();
 
         if(currentState) currentState->onImmediateGui(); // Call to run any required Immediate GUI.
+
+
+        // Initialize the window size and position
+        ImGui::SetNextWindowSize(ImVec2(io.DisplaySize.x, io.DisplaySize.y));
+        ImGui::Begin(" ", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
+        ImGui::SetWindowPos(" ", ImVec2(0, 0));
+
+        // Initialize the style of the window (to set colors)
+        ImGuiStyle *style = &ImGui::GetStyle();
+
+        ImVec4 *colors = style->Colors;
+        colors[ImGuiCol_WindowBg] = ImVec4(0.0f, 0.0f, 0.0f, 0.0f);
+        colors[ImGuiCol_Border] = ImVec4(0.0f, 0.0f, 0.0f, 0.0f);
+
+        // Set Cursor Position
+        ImGui::SetCursorPosX(60/1200.0f*io.DisplaySize.x);
+        ImGui::SetCursorPosY(0);
+        // Display the score
+        ImGui::PushFont(font);
+        string l1 = "Score: ";
+        string l2 = to_string(score);
+        string totalLine = l1 + l2;
+        ImGui::Text(totalLine.c_str());
+        ImGui::PopFont();
+
+        ImGui::End();
+
 
         // If ImGui is using the mouse or keyboard, then we don't want the captured events to affect our keyboard and mouse objects.
         // For example, if you're focusing on an input and writing "W", the keyboard object shouldn't record this event.
