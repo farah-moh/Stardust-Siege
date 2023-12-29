@@ -32,7 +32,8 @@
                 "glass": "assets/textures/glass-panels.png",
                 "monkey": "assets/textures/monkey.png",
                 "asteroid" : "assets/textures/asteroid.png",
-                "bullet": "assets/textures/bullet.png"
+                "bullet": "assets/textures/bullet.png",
+                "player": "assets/textures/player.png"
             },
             "meshes":{
                 "cube": "assets/models/cube.obj",
@@ -40,7 +41,8 @@
                 "plane": "assets/models/plane.obj",
                 "sphere": "assets/models/sphere.obj",
                 "asteroid": "assets/models/asteroid.obj",
-                "bullet": "assets/models/bullet.obj"
+                "bullet": "assets/models/bullet.obj",
+                "player": "assets/models/player.obj"
             },
             "samplers":{
                 "default":{},
@@ -129,6 +131,21 @@
                     "texture": "asteroid",
                     "sampler": "default"
                 },
+                "player":{
+                    "type": "textured",
+                    "shader": "textured",
+                    "pipelineState": {
+                        "faceCulling":{
+                            "enabled": false
+                        },
+                        "depthTesting":{
+                            "enabled": true
+                        }
+                    },
+                    "tint": [1, 1, 1, 1],
+                    "texture": "player",
+                    "sampler": "default"
+                },
                 "bullet":{
                     "type": "textured",
                     "shader": "textured",
@@ -159,19 +176,32 @@
                 ],
                 "children": [
                     {
-                        "position": [1, -1, -1],
-                        "rotation": [45, 45, 0],
-                        "scale": [0.1, 0.1, 1.0],
+                        "position": [0, -1, -3],
+                        "rotation": [0, -90, 0],
+                        "scale": [0.5, 0.5, 0.5],
                         "components": [
                             {
                                 "type": "Mesh Renderer",
-                                "mesh": "cube",
-                                "material": "metal"
+                                "mesh": "player",
+                                "material": "player"
                             }
                         ]
                     }
                 ]
             },
+            // {
+            //     "name": "player",
+            //     "position": [0, 1, 5],
+            //     "rotation": [0, 180, 0],
+            //     "scale": [40, 60, 40],
+            //     "components": [
+            //         {
+            //             "type": "Mesh Renderer",
+            //             "mesh": "player",
+            //             "material": "player"
+            //         }
+            //     ]
+            // },
             // {
             //     "rotation": [-45, 0, 0],
             //     "components": [
