@@ -106,7 +106,7 @@ namespace our
                 // std::cout<<config.get<std::string>()<<std::endl;
                 auto bulletJson = config["scene"]["runtimeEntity"][0];
                 bulletJson["position"] = {position[0],position[1],position[2]};
-                //bulletJson["rotation"] = {rotation[0],rotation[1],rotation[2]};
+                // bulletJson["rotation"] = {rotation[0],rotation[1],rotation[2]};
 
                 // std::cout<<bulletJson<<std::endl;
                 auto newEntity = world->add();

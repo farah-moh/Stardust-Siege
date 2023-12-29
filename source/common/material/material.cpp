@@ -80,4 +80,81 @@ namespace our {
         sampler = AssetLoader<Sampler>::get(data.value("sampler", ""));
     }
 
+    void LitMaterial::setup() const
+    {
+        // Calling the parent (Material) setup function
+        Material::setup();
+
+        glActiveTexture(GL_TEXTURE0);
+        if (albedo)
+            albedo->bind();
+        else
+            Texture2D::unbind();
+        if (sampler)
+            sampler->bind(0);
+        else
+            Sampler::unbind(0);
+        //Setting uniform tex_material.albedo in shader
+        shader->set("tex_material.albedo", 0);
+
+        glActiveTexture(GL_TEXTURE1);
+        if (specular)
+            specular->bind();
+        else
+            Texture2D::unbind();
+        if (sampler)
+            sampler->bind(1);
+        else
+            Sampler::unbind(1);
+        shader->set("tex_material.specular", 1);
+
+        glActiveTexture(GL_TEXTURE2);
+        if (roughness)
+            roughness->bind();
+        else
+            Texture2D::unbind();
+        if (sampler)
+            sampler->bind(2);
+        else
+            Sampler::unbind(2);
+        shader->set("tex_material.roughness", 2);
+
+        glActiveTexture(GL_TEXTURE3);
+        if (emissive)
+            emissive->bind();
+        else
+            Texture2D::unbind();
+        if (sampler)
+            sampler->bind(3);
+        else
+            Sampler::unbind(3);
+        shader->set("tex_material.emissive", 3);
+
+        glActiveTexture(GL_TEXTURE4);
+        if (ambient_occlusion)
+            ambient_occlusion->bind();
+        else
+            Texture2D::unbind();
+        if (sampler)
+            sampler->bind(4);
+        else
+            Sampler::unbind(4);
+        shader->set("tex_material.ambient_occlusion", 4);
+    }
+
+    void LitMaterial::deserialize(const nlohmann::json &data)
+    {
+        Material::deserialize(data);
+        if (!data.is_object())
+            return;
+            
+        albedo = AssetLoader<Texture2D>::get(data.value("albedo", "black"));
+        specular = AssetLoader<Texture2D>::get(data.value("specular", "black"));
+        roughness = AssetLoader<Texture2D>::get(data.value("roughness", "black"));
+        emissive = AssetLoader<Texture2D>::get(data.value("emissive", "black"));
+        ambient_occlusion = AssetLoader<Texture2D>::get(data.value("ambient_occlusion", "white"));
+        sampler = AssetLoader<Sampler>::get(data.value("sampler", ""));
+
+    }
+
 }
