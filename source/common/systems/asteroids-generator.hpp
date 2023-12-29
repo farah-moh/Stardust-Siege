@@ -80,7 +80,7 @@ namespace our
                     // get the position of the entity
                     glm::vec3 &position = entity->localTransform.position;
                     // if the position of the entity is greater than 60
-                    if (position.z < -3)
+                    if (position.z < -20)
                     {
                         // delete the entity
                         world->markForRemoval(entity);
