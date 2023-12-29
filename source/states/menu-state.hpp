@@ -47,6 +47,10 @@ class Menustate: public our::State {
     // An array of the button that we can interact with
     std::array<Button, 2> buttons;
 
+    std::string getName() override {
+        return "menu";
+    }
+
     void onInitialize() override {
         // First, we create a material for the menu's background
         menuMaterial = new our::TexturedMaterial();

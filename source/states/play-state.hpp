@@ -20,6 +20,10 @@ class Playstate: public our::State {
     our::Collision collision;
     our::MovementSystem movementSystem;
 
+    std::string getName() override {
+        return "play";
+    }
+
     void onInitialize() override {
         // First of all, we get the scene configuration from the app config
         auto& config = getApp()->getConfig()["scene"];
