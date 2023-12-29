@@ -60,6 +60,16 @@ namespace our
                 }
             }
 
+            glm::vec3& playerCenter = player->parent->localTransform.position;
+            for(auto asteroid : asteroids) {
+                glm::vec3 asteroidCenter = asteroid->localTransform.position;
+                float distance = glm::distance(playerCenter, asteroidCenter);
+                if (distance < 7) {
+                    playerCenter = glm::vec3(0, 0, 10);
+                    score--;
+                }
+            }
+
             world->deleteMarkedEntities(); 
             return;
         }
