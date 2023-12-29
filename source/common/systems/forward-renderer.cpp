@@ -154,11 +154,22 @@ namespace our
         CameraComponent *camera = nullptr;
         opaqueCommands.clear();
         transparentCommands.clear();
+        lights.clear();
         for (auto entity : world->getEntities())
         {
             // If we hadn't found a camera yet, we look for a camera in this entity
             if (!camera)
                 camera = entity->getComponent<CameraComponent>();
+
+            if (auto light = entity->getComponent<LightComponent>(); light)
+            {
+                LightObject* lightObject = new LightObject(light); // calling constructor to set the values except position and direction
+                lightObject->position = glm::vec3(entity->getLocalToWorldMatrix() * glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
+                lightObject->direction = glm::vec3(entity->getLocalToWorldMatrix() * glm::vec4(0.0f, -1.0f, 0.0f, 0.0f));
+
+                lights.push_back(*lightObject);
+
+            }
             // If this entity has a mesh renderer component
             if (auto meshRenderer = entity->getComponent<MeshRendererComponent>(); meshRenderer)
             {
@@ -240,6 +251,7 @@ namespace our
 
         for (auto command : opaqueCommands) {
             command.material->setup();
+            LightObject::setup(command, lights);
             // This matrix is used by the shader to transform the object's vertices from world space to clip space
             command.material->shader->set("transform", VP * command.localToWorld);
             command.mesh->draw();
@@ -285,6 +297,7 @@ namespace our
         for (auto command : transparentCommands)
         {
             command.material->setup();
+            LightObject::setup(command, lights);
             // This matrix is used by the shader to transform the object's vertices from world space to clip space
             command.material->shader->set("transform", VP * command.localToWorld);
             command.mesh->draw();
