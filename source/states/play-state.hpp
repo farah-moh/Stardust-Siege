@@ -59,6 +59,9 @@ class Playstate: public our::State {
         // And finally we use the renderer system to draw the scene
         renderer.render(&world);
         getApp()->setScore(collision.score);
+        if(getApp()->getScore() < 0) {
+            getApp()->changeState("lose");
+        }
         // Get a reference to the keyboard object
         auto& keyboard = getApp()->getKeyboard();
 

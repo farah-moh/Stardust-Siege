@@ -103,7 +103,7 @@ namespace our
             // A & D moves the player left or right 
             if(app->getKeyboard().isPressed(GLFW_KEY_D)) position += right * (deltaTime * current_sensitivity.x);
             if(app->getKeyboard().isPressed(GLFW_KEY_A)) position -= right * (deltaTime * current_sensitivity.x);
-
+            // return to initial position
             if(app->getKeyboard().isPressed(GLFW_KEY_R)) position = glm::vec3(0, 0, 10);;
 
             if(app->getKeyboard().isPressed(GLFW_KEY_SPACE)) {
