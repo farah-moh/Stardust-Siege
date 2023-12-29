@@ -33,11 +33,15 @@ namespace our
             // First of all, we search for an entity containing both a CameraComponent and a FreeCameraControllerComponent
             // As soon as we find one, we break
             CameraComponent* camera = nullptr;
+            Entity* player = nullptr;
             FreeCameraControllerComponent *controller = nullptr;
             for(auto entity : world->getEntities()){
                 camera = entity->getComponent<CameraComponent>();
                 controller = entity->getComponent<FreeCameraControllerComponent>();
                 if(camera && controller) break;
+            }
+            for(auto entity : world->getEntities()){
+                if(entity->name == "player") player = entity;
             }
             // If there is no entity with both a CameraComponent and a FreeCameraControllerComponent, we can do nothing so we return
             if(!(camera && controller)) return;
@@ -99,19 +103,19 @@ namespace our
             // A & D moves the player left or right 
             if(app->getKeyboard().isPressed(GLFW_KEY_D)) position += right * (deltaTime * current_sensitivity.x);
             if(app->getKeyboard().isPressed(GLFW_KEY_A)) position -= right * (deltaTime * current_sensitivity.x);
+            // return to initial position
+            if(app->getKeyboard().isPressed(GLFW_KEY_R)) position = glm::vec3(0, 0, 10);;
 
             if(app->getKeyboard().isPressed(GLFW_KEY_SPACE)) {
                 auto config = app->getConfig();
-                // if(config) 
-                // std::cout<<config.get<std::string>()<<std::endl;
+                // get the bullet config
                 auto bulletJson = config["scene"]["runtimeEntity"][0];
-                bulletJson["position"] = {position[0],position[1],position[2]};
-                // bulletJson["rotation"] = {rotation[0],rotation[1],rotation[2]};
+                auto position = player->localTransform.position;
+                bulletJson["position"] = {position[0],position[1]+1,position[2]};
+                auto rotation = player->localTransform.rotation;
+                bulletJson["rotation"] = {rotation[0],rotation[1],rotation[2]};
 
-                // std::cout<<bulletJson<<std::endl;
-                auto newEntity = world->add();
-                newEntity->deserialize(bulletJson);
-                newEntity->parent = entity->parent;
+                world->addEntityAndDeserialize(bulletJson, player->parent);
             }
         }
 

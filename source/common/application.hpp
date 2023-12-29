@@ -35,6 +35,7 @@ namespace our {
         virtual void onImmediateGui(){}                 // Called every frame to draw the Immediate GUI (if any).
         virtual void onDraw(double deltaTime){}         // Called every frame in the game loop passing the time taken to draw the frame "Delta time".
         virtual void onDestroy(){}                      // Called once after the game loop ends for house cleaning.
+        virtual std::string getName(){return "";}    // Returns the name of the state
 
 
         // Override these functions to get mouse and keyboard event.
@@ -62,6 +63,7 @@ namespace our {
         std::unordered_map<std::string, State*> states;   // This will store all the states that the application can run
         State * currentState = nullptr;         // This will store the current scene that is being run
         State * nextState = nullptr;            // If it is requested to go to another scene, this will contain a pointer to that scene
+        int score = 0;
 
         
         // Virtual functions to be overrode and change the default behaviour of the application
@@ -107,6 +109,14 @@ namespace our {
         // Closes the Application
         void close(){
             glfwSetWindowShouldClose(window, GLFW_TRUE);
+        }
+
+        void setScore(int score) {
+            this->score = score;
+        }
+
+        int getScore() {
+            return score;
         }
 
         // Class Getters.
