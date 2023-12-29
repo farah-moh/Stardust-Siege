@@ -56,6 +56,14 @@ class Playstate: public our::State {
         if (asteroidGenerator)
             asteroidGenerator->update(&world, (float)deltaTime);
         collision.update(&world, (float)deltaTime);
+
+        if(collision.bulletCollide) {
+
+        }
+        if(collision.spaceshipCollide) {
+            
+        }
+
         // And finally we use the renderer system to draw the scene
         renderer.render(&world);
         getApp()->setScore(collision.score);

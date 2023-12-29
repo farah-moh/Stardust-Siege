@@ -110,12 +110,12 @@ namespace our
                 auto config = app->getConfig();
                 // get the bullet config
                 auto bulletJson = config["scene"]["runtimeEntity"][0];
-                auto position = player->localTransform.position;
+                //auto position = player->localTransform.position;
                 bulletJson["position"] = {position[0],position[1]+1,position[2]};
                 auto rotation = player->localTransform.rotation;
                 bulletJson["rotation"] = {rotation[0],rotation[1],rotation[2]};
 
-                world->addEntityAndDeserialize(bulletJson, player->parent);
+                world->addEntityAndDeserialize(bulletJson);
             }
         }
 

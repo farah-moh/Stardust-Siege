@@ -24,6 +24,8 @@ namespace our
 
     public:
         int score = 0;
+        bool spaceshipCollide = false;
+        bool bulletCollide = false;
         // When a state enters, it should call this function and give it the pointer to the application
         void enter(Application* app){
             this->app = app;
@@ -45,30 +47,25 @@ namespace our
 
             if(!player) return;
 
+            bool collided = false;
+
             for (auto bulletIt = bullets.begin(); bulletIt != bullets.end(); bulletIt++)  {
                 Entity* bullet = *bulletIt;
                 glm::vec3 bulletCenter = bullet->localTransform.position;
-                //std::cout<<"-------------"<<bulletCenter[0]<<" "<<bulletCenter[1]<<" "<<bulletCenter[2];
+
                 for (auto asteroidIt = asteroids.begin(); asteroidIt != asteroids.end(); asteroidIt++) 
                 {
                     Entity* asteroid = *asteroidIt;
-                    auto meshRenderer = asteroid->getComponent<MeshRendererComponent>();
-                    if(!meshRenderer) continue;
-                    Mesh* mesh = meshRenderer->mesh;
-                    std::vector<float> boundingBox = mesh->getBoundingBox();
                     if(detectCollision(asteroid, bulletCenter)) {
-                        world->markForRemoval(bullet);
+                        for(auto i : bullets) world->markForRemoval(i);
                         world->markForRemoval(asteroid);    
                         score++;
+                        collided = true;
+                        bulletCollide = true;
+                        break;
                     }
-                    // glm::vec3 asteroidCenter = asteroid->localTransform.position;
-                    // float distance = glm::distance(bulletCenter, asteroidCenter);
-                    // if (distance < 15) {
-                    //     world->markForRemoval(bullet);
-                    //     world->markForRemoval(asteroid);    
-                    //     score++;
-                    // }
                 }
+                if(collided) break;
             }
 
             glm::vec3& playerCenter = player->parent->localTransform.position;
@@ -80,6 +77,7 @@ namespace our
                     playerCenter = glm::vec3(0, 0, 10);
                     score--;
                     world->markForRemoval(asteroid);
+                    spaceshipCollide = true;
                 }
             }
 
@@ -87,32 +85,24 @@ namespace our
             return;
         }
 
-        // bool detectCollision(std::vector<float>boundingBox, glm::vec3 center) {
-        //     float x = center[0], y = center[1], z = center[2];
-        //     for(auto i : boundingBox) std::cout<<i<<std::endl;
-        //     float minX = boundingBox[0], maxX = boundingBox[1];
-        //     float minY = boundingBox[2], maxY = boundingBox[3];
-        //     float minZ = boundingBox[4], maxZ = boundingBox[5];
-        //     return  (x >= minX && x <= maxX) &&
-        //             (y >= minY && y <= maxY) &&
-        //             (z >= minZ && z <= maxZ);
-        // }
         bool detectCollision(Entity* entity, glm::vec3 center) {
             float x = center[0], y = center[1], z = center[2];
-            float scaleX = entity->localTransform.scale[0]*5;
-            float scaleY = entity->localTransform.scale[1]*5;
-            float scaleZ = entity->localTransform.scale[2]*5;
+            float scaleX = entity->localTransform.scale[0]*3;
+            float scaleY = entity->localTransform.scale[1]*3;
+            float scaleZ = entity->localTransform.scale[2]*3;
 
             float Ex = entity->localTransform.position[0];
             float Ey = entity->localTransform.position[1];
             float Ez = entity->localTransform.position[2];
 
+            // float distance = glm::distance(center, entity->localTransform.position);
+
             float minX = Ex - scaleX, maxX = Ex + scaleX;
             float minY = Ey - scaleY, maxY = Ey + scaleY;
             float minZ = Ez - scaleZ, maxZ = Ez + scaleZ;
-            return  (x >= minX && x <= maxX) &&
+            return  ((x >= minX && x <= maxX) &&
                     (y >= minY && y <= maxY) &&
-                    (z >= minZ && z <= maxZ);
+                    (z >= minZ && z <= maxZ));
         }
 
     };
