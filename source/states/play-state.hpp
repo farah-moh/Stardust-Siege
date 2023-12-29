@@ -6,6 +6,7 @@
 #include <systems/forward-renderer.hpp>
 #include <systems/free-camera-controller.hpp>
 #include <systems/collision.hpp>
+#include <systems/asteroids-generator.hpp>
 #include <systems/movement.hpp>
 #include <asset-loader.hpp>
 
@@ -15,6 +16,7 @@ class Playstate: public our::State {
     our::World world;
     our::ForwardRenderer renderer;
     our::FreeCameraControllerSystem cameraController;
+    our::AsteroidsGenerator* asteroidGenerator;
     our::Collision collision;
     our::MovementSystem movementSystem;
 
@@ -29,6 +31,12 @@ class Playstate: public our::State {
         if(config.contains("world")){
             world.deserialize(config["world"]);
         }
+        if (config.contains("runtimeEntity"))
+        {
+            // if (!config["runtimeEntity"].is_object())
+            //     return;
+            asteroidGenerator = new our::AsteroidsGenerator(config["runtimeEntity"][1]);
+        }
         collision.enter(getApp());
         // We initialize the camera controller system since it needs a pointer to the app
         cameraController.enter(getApp());
@@ -41,6 +49,8 @@ class Playstate: public our::State {
         // Here, we just run a bunch of systems to control the world logic
         movementSystem.update(&world, (float)deltaTime);
         cameraController.update(&world, (float)deltaTime);
+        if (asteroidGenerator)
+            asteroidGenerator->update(&world, (float)deltaTime);
         collision.update(&world, (float)deltaTime);
         // And finally we use the renderer system to draw the scene
         renderer.render(&world);

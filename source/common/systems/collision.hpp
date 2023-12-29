@@ -45,15 +45,17 @@ namespace our
 
             if(!player) return;
 
-            for(auto bullet : bullets) {
+            for (auto bulletIt = bullets.begin(); bulletIt != bullets.end(); bulletIt++)  {
+                Entity* bullet = *bulletIt;
                 glm::vec3 bulletCenter = bullet->localTransform.position;
                 //std::cout<<"-------------"<<bulletCenter[0]<<" "<<bulletCenter[1]<<" "<<bulletCenter[2];
-                for (auto it = asteroids.begin(); it != asteroids.end(); it++) 
+                for (auto asteroiIt = asteroids.begin(); asteroiIt != asteroids.end(); asteroiIt++) 
                 {
-                    Entity* asteroid = *it;
+                    Entity* asteroid = *asteroiIt;
                     glm::vec3 asteroidCenter = asteroid->localTransform.position;
                     float distance = glm::distance(bulletCenter, asteroidCenter);
-                    if (distance < 7) {
+                    if (distance < 50) {
+                        world->markForRemoval(bullet);
                         world->markForRemoval(asteroid);    
                         score++;
                     }
@@ -65,6 +67,7 @@ namespace our
                 glm::vec3 asteroidCenter = asteroid->localTransform.position;
                 float distance = glm::distance(playerCenter, asteroidCenter);
                 if (distance < 7) {
+                    // return to initial position
                     playerCenter = glm::vec3(0, 0, 10);
                     score--;
                 }

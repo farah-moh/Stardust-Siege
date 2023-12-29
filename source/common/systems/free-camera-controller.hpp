@@ -104,22 +104,18 @@ namespace our
             if(app->getKeyboard().isPressed(GLFW_KEY_D)) position += right * (deltaTime * current_sensitivity.x);
             if(app->getKeyboard().isPressed(GLFW_KEY_A)) position -= right * (deltaTime * current_sensitivity.x);
 
+            if(app->getKeyboard().isPressed(GLFW_KEY_R)) position = glm::vec3(0, 0, 10);;
+
             if(app->getKeyboard().isPressed(GLFW_KEY_SPACE)) {
                 auto config = app->getConfig();
-                // if(config) 
-                // std::cout<<config.get<std::string>()<<std::endl;
+                // get the bullet config
                 auto bulletJson = config["scene"]["runtimeEntity"][0];
                 auto position = player->localTransform.position;
                 bulletJson["position"] = {position[0],position[1]+1,position[2]};
                 auto rotation = player->localTransform.rotation;
                 bulletJson["rotation"] = {rotation[0],rotation[1],rotation[2]};
 
-                // std::cout<<bulletJson<<std::endl;
-                auto newEntity = world->add();
-                newEntity->deserialize(bulletJson);
-                newEntity->parent = player->parent;
-                //newEntity->localTransform = player->localTransform;
-                newEntity->name = "bullet";
+                world->addEntityAndDeserialize(bulletJson, player->parent);
             }
         }
 

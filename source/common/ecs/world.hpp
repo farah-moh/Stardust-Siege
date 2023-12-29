@@ -32,6 +32,20 @@ namespace our {
             return entity;
         }
 
+        
+        Entity* addEntityAndDeserialize(const nlohmann::json& data, Entity* parent = nullptr) {
+            if (!data.is_object())
+                return nullptr;
+            auto newEntity = add();
+            newEntity->deserialize(data);
+            newEntity->parent = parent;
+            if (data.contains("children"))
+            {
+                deserialize(data["children"], newEntity);
+            }
+            return newEntity;
+        }
+
         // This returns and immutable reference to the set of all entites in the world.
         const std::unordered_set<Entity*>& getEntities() {
             return entities;

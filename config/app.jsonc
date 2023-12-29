@@ -219,9 +219,9 @@
             //     ]
             // },
             {
-                "position": [0, -1, 0],
+                "position": [0, -1, 9],
                 "rotation": [-90, 0, 0],
-                "scale": [10, 10, 1],
+                "scale": [1, 1, 1],
                 "components": [
                     {
                         "type": "Mesh Renderer",
@@ -291,6 +291,18 @@
             //     ]
             // },
             // {
+            //     "position": [0, 3, 0],
+            //     "rotation": [90, 0, 0],
+            //     "scale": [2, 2, 2],
+            //     "components": [
+            //         {
+            //             "type": "Mesh Renderer",
+            //             "mesh": "plane",
+            //             "material": "glass"
+            //         }
+            //     ]
+            // },
+            // {
             //     "position": [0, 2, 0],
             //     "rotation": [45, 45, 0],
             //     "scale": [1, 1, 1],
@@ -331,7 +343,7 @@
                 "name": "bullet",
                 "position": [10, 10, 10],
                 "rotation": [45, 45, 0],
-                "scale": [7, 7, 7],
+                "scale": [10, 10, 10],
                 "components": [
                     {
                         "type": "Mesh Renderer",
@@ -341,7 +353,25 @@
                     {
                         "type": "Movement",
                         "angularVelocity": [0, 0, 0],
-                        "linearVelocity": [0, 0, -3]
+                        "linearVelocity": [0, 0, -5]
+                    }
+                ]
+            },
+            {
+                "name": "asteroid",
+                "position": [0, 5, -60],
+                "rotation": [45, 45, 0],
+                "scale": [5, 5, 5],
+                "components": [
+                    {
+                        "type": "Mesh Renderer",
+                        "mesh": "asteroid",
+                        "material": "asteroid"
+                    },
+                    {
+                        "type": "Movement",
+                        "angularVelocity": [0, 90, 0],
+                        "linearVelocity": [0, 0, 5]
                     }
                 ]
             }
