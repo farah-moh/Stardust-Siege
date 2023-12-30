@@ -27,7 +27,7 @@ namespace our
         ll curr_time;
         ll delay;
 
-        float generateRandomFloat(float min = -100, float max = 100)
+        float generateRandomFloat(float min = -40, float max = 40)
         {
             return min + rand() * (max - min) / RAND_MAX;
         }

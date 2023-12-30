@@ -36,6 +36,7 @@
                 "grass": "assets/textures/grass_ground_d.jpg",
                 "wood": "assets/textures/wood.jpg",
                 "glass": "assets/textures/glass-panels.png",
+                "shield": "assets/textures/shield.png",
                 "monkey": "assets/textures/monkey.png",
                 "asteroid" : "assets/textures/asteroid.png",
                 "bullet": "assets/textures/bullet.png",
@@ -95,6 +96,28 @@
                     "texture": "glass",
                     "sampler": "pixelated"
                 },
+                "shield":{
+                    "type": "textured",
+                    "shader": "textured",
+                    "pipelineState": {
+                        "faceCulling":{
+                            "enabled": false
+                        },
+                        "depthTesting":{
+                            "enabled": true
+                        },
+                        "blending":{
+                            "enabled": true,
+                            "sourceFactor": "GL_SRC_ALPHA",
+                            "destinationFactor": "GL_ONE_MINUS_SRC_ALPHA"
+                        },
+                        "depthMask": false
+                    },
+                    "transparent": true,
+                    "tint": [1, 1, 1, 0.5],
+                    "texture": "shield",
+                    "sampler": "pixelated"
+                },
                 "grass":{
                     "type": "textured",
                     "shader": "textured",
@@ -107,7 +130,7 @@
                         }
                     },
                     "tint": [1, 1, 1, 1],
-                    "texture": "grass",
+                    "texture": "glass",
                     "sampler": "default"
                 },
                 "monkey":{
@@ -388,6 +411,23 @@
                         "type": "Movement",
                         "angularVelocity": [0, 90, 0],
                         "linearVelocity": [0, 0, 5]
+                    }
+                ]
+            },
+            {
+                "name": "shield",
+                "position": [0, 0, 0],
+                "rotation": [270, -90, 0],
+                "scale": [0.72, 0.72, 0.72],
+                "components": [
+                    {
+                        "type": "Mesh Renderer",
+                        "mesh": "sphere",
+                        "material": "shield"
+                    },
+                    {
+                        "type": "Movement",
+                        "angularVelocity": [0, 90, 0]
                     }
                 ]
             }

@@ -50,7 +50,6 @@ namespace our
             for (auto &light : lights)
             {
                 std::string name = "lights[" + std::to_string(index++) + "].";
-                std::cout<<name<<std::endl;
                 command.material->shader->set(name + "type", (int)light.type);
                 command.material->shader->set(name + "diffuse", light.diffuse);
                 command.material->shader->set(name + "specular", light.specular);

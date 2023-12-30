@@ -21,15 +21,19 @@ namespace our
     class FreeCameraControllerSystem {
         Application* app; // The application in which the state runs
         bool mouse_locked = false; // Is the mouse locked
+        nlohmann::json shield;
+        Entity* shieldEnt;
 
     public:
         // When a state enters, it should call this function and give it the pointer to the application
-        void enter(Application* app){
+        bool shielded = false;
+        void enter(Application* app, nlohmann::json shield){
             this->app = app;
+            this->shield = shield;
         }
 
         // This should be called every frame to update all entities containing a FreeCameraControllerComponent 
-        void update(World* world, float deltaTime) {
+        void update(World* world, float deltaTime, int& score) {
             // First of all, we search for an entity containing both a CameraComponent and a FreeCameraControllerComponent
             // As soon as we find one, we break
             CameraComponent* camera = nullptr;
@@ -104,7 +108,16 @@ namespace our
             if(app->getKeyboard().isPressed(GLFW_KEY_D)) position += right * (deltaTime * current_sensitivity.x);
             if(app->getKeyboard().isPressed(GLFW_KEY_A)) position -= right * (deltaTime * current_sensitivity.x);
             // return to initial position
-            if(app->getKeyboard().isPressed(GLFW_KEY_R)) position = glm::vec3(0, 0, 10);;
+            if(app->getKeyboard().isPressed(GLFW_KEY_R)) position = glm::vec3(0, 0, 10);
+            // apply powerup
+            if(app->getKeyboard().isPressed(GLFW_KEY_F) && score >= 1 && !shielded) {
+                score --;
+                shieldEnt = world->addEntityAndDeserialize(shield, entity);
+                auto position = player->localTransform.position;
+                shieldEnt->localTransform.position = {position[0]+0.03,position[1]+0.12,position[2]+1.2};
+                //shieldEnt->localTransform.rotation = rotation;
+                shielded = true;
+            }
 
             if(app->getKeyboard().isPressed(GLFW_KEY_SPACE)) {
                 auto config = app->getConfig();
@@ -117,6 +130,11 @@ namespace our
 
                 world->addEntityAndDeserialize(bulletJson);
             }
+        }
+
+        void removeShield(World* world) {
+            world->markForRemoval(shieldEnt);
+            world->deleteMarkedEntities();
         }
 
         // When the state exits, it should call this function to ensure the mouse is unlocked
