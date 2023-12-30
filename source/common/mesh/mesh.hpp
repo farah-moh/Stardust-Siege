@@ -17,7 +17,6 @@ namespace our {
         unsigned int VAO;
         // We need to remember the number of elements that will be draw by glDrawElements 
         GLsizei elementCount;
-        std::vector<float> boundingBox;
     public:
 
         // The constructor takes two vectors:
@@ -86,26 +85,6 @@ namespace our {
             glBindVertexArray(0);
             glBindBuffer(GL_ARRAY_BUFFER, 0);
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-
-            // float minX(FLT_MAX), maxX(FLT_MIN), minY(FLT_MAX), maxY(FLT_MIN), minZ(FLT_MAX), maxZ(FLT_MIN);
-            // std::vector<float> boundingBox;
-            // for(auto vertex : vertices) {
-            //     minX = std::min(minX, vertex.position[0]);
-            //     minY = std::min(minY, vertex.position[1]);
-            //     minZ = std::min(minZ, vertex.position[2]);
-
-            //     maxX = std::max(maxX, vertex.position[0]);
-            //     maxY = std::max(maxY, vertex.position[1]);
-            //     maxZ = std::max(maxY, vertex.position[2]);
-            // }
-            // boundingBox.insert(boundingBox.end(), { minX, maxY, minY, maxY, minZ, maxZ });
-            // for(auto i : boundingBox) {
-            //     std::printf("%f", i);
-            // }
-        }
-
-        std::vector<float> getBoundingBox() {
-            return boundingBox;
         }
 
         // this function should render the mesh
