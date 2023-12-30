@@ -27,7 +27,13 @@ namespace our
         ll curr_time;
         ll delay;
 
-        float generateRandomFloat(float min = -100, float max = 100)
+        glm::vec3 position0 = glm::vec3(-1,-1,-3);
+        glm::vec3 position1 = glm::vec3(1,-1,-3);
+        glm::vec3 position2 = glm::vec3(0,-1,-1);
+
+        std::vector<glm::vec3> positions = {position0, position1, position2};
+
+        float generateRandomFloat(float min = -40, float max = 40)
         {
             return min + rand() * (max - min) / RAND_MAX;
         }
@@ -40,7 +46,7 @@ namespace our
     public:
         nlohmann::json asteroid;
 
-        AsteroidsGenerator(const nlohmann::json &asteroid) : curr_time(0), delay(1000)
+        AsteroidsGenerator(const nlohmann::json &asteroid) : curr_time(0), delay(500)
         {
             srand(time(0));
             this->asteroid = asteroid;
@@ -51,7 +57,11 @@ namespace our
             ll now = glfwGetTime()*1000;
             if (now - curr_time < delay)
                 return;
+
             curr_time = glfwGetTime()*1000;
+
+            vector<Entity*> RGBlights;
+
 
             glm::vec3 position;
             glm::vec3 speed;
@@ -66,8 +76,8 @@ namespace our
             entity->localTransform.position = position;
             entity->getComponent<MovementComponent>()->linearVelocity = speed;
 
-            // remove asteroids not in the screen
             const unordered_set<Entity *> entities = world->getEntities();
+            // remove asteroids not in the screen
             for (auto entity : entities)
             {
                 if (!entity)
@@ -94,7 +104,15 @@ namespace our
                         world->markForRemoval(entity);
                     }
                 }
+                else if(entity->name == "redLight") RGBlights.push_back(entity);
+                else if(entity->name == "blueLight") RGBlights.push_back(entity);
+                else if(entity->name == "greenLight") RGBlights.push_back(entity);
             }
+
+            RGBlights[0]->localTransform.position = positions[curr_time%3];
+            RGBlights[1]->localTransform.position = positions[(curr_time%3+1)%3];
+            RGBlights[2]->localTransform.position = positions[(curr_time%3+2)%3];
+
             world->deleteMarkedEntities();
         }
     };

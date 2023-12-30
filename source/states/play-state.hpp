@@ -41,10 +41,10 @@ class Playstate: public our::State {
             // if (!config["runtimeEntity"].is_object())
             //     return;
             asteroidGenerator = new our::AsteroidsGenerator(config["runtimeEntity"][1]);
+            cameraController.enter(getApp(), config["runtimeEntity"][2]);
         }
         collision.enter(getApp());
         // We initialize the camera controller system since it needs a pointer to the app
-        cameraController.enter(getApp());
         // Then we initialize the renderer
         auto size = getApp()->getFrameBufferSize();
         renderer.initialize(size, config["renderer"]);
@@ -53,22 +53,19 @@ class Playstate: public our::State {
     void onDraw(double deltaTime) override {
         // Here, we just run a bunch of systems to control the world logic
         movementSystem.update(&world, (float)deltaTime);
-        cameraController.update(&world, (float)deltaTime);
+
         if (asteroidGenerator)
             asteroidGenerator->update(&world, (float)deltaTime);
-        collision.update(&world, (float)deltaTime);
+        collision.update(&world, cameraController.shielded);
+
+        cameraController.update(&world, (float)deltaTime, collision.score);
 
         // And finally we use the renderer system to draw the scene
         renderer.render(&world);
-        getApp()->setScore(collision.score);
-        if(getApp()->getScore() < 0) {
-            getApp()->changeState("lose");
-        }
 
         // ################# Postprocessing Effects #################
         // shake effect on collision spaceship with asteroid
         if(collision.bulletCollide && !getApp()->getTimer()) {
-            std::cout << "Inside bullet collision \n";
             // renderer.setDoomed(false);   // Set the renderer to Doom mode
             renderer.setShaken(true);   // Set the renderer to Doom mode
             getApp()->setTimer(true);   // Set the timer (to start the countdown, and to make sure no doom mode is set again)
@@ -77,13 +74,18 @@ class Playstate: public our::State {
         }
 
         // Doom effect on collision spaceship with asteroid
-        if(collision.spaceshipCollide && !getApp()->getTimer()) {
-            std::cout << "Inside body collision \n";
-            // renderer.setShaken(false);   // Set the renderer to Doom mode
-            renderer.setDoomed(true);   // Set the renderer to Doom mode
-            getApp()->setTimer(true);   // Set the timer (to start the countdown, and to make sure no doom mode is set again)
-            doomTime = glfwGetTime();          // The start time of the doom mode
-            getApp()->setCountdownTime(doomTime);  // Set the countdown time (to be used in application class)   
+        if(collision.spaceshipCollide) {
+            if(!getApp()->getTimer()) {
+                // renderer.setShaken(false);   // Set the renderer to Doom mode
+                renderer.setDoomed(true);   // Set the renderer to Doom mode
+                getApp()->setTimer(true);   // Set the timer (to start the countdown, and to make sure no doom mode is set again)
+                doomTime = glfwGetTime();          // The start time of the doom mode
+                getApp()->setCountdownTime(doomTime);  // Set the countdown time (to be used in application class)   
+            }
+            if(cameraController.shielded) {
+                cameraController.shielded = false;
+                cameraController.removeShield(&world);
+            }
         }
 
         // Check if the timer of shaken effect lasted 0.5 seconds
@@ -98,6 +100,16 @@ class Playstate: public our::State {
             getApp()->setTimer(false);
             // getApp()->setCountdown(2);
             renderer.setDoomed(false);
+        }
+
+                
+        getApp()->setScore(collision.score);
+        if(getApp()->getScore() < 0) {
+            getApp()->changeState("lose");
+        }
+
+        if(getApp()->getScore() >= 10) {
+            getApp()->changeState("win");
         }
 
         // Get a reference to the keyboard object

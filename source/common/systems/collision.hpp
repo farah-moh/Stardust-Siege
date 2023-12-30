@@ -33,7 +33,7 @@ namespace our
         }
 
         // This should be called every frame to update all entities containing a FreeCameraControllerComponent 
-        void update(World* world, float deltaTime) {
+        void update(World* world, bool shielded) {
 
             bulletCollide = 0;
             spaceshipCollide = 0;
@@ -59,7 +59,7 @@ namespace our
                 for (auto asteroidIt = asteroids.begin(); asteroidIt != asteroids.end(); asteroidIt++) 
                 {
                     Entity* asteroid = *asteroidIt;
-                    if(detectCollision(asteroid, bulletCenter)) {
+                    if(detectCollision(asteroid, bulletCenter,1)) {
                         for(auto i : bullets) world->markForRemoval(i);
                         world->markForRemoval(asteroid);    
                         score++;
@@ -74,19 +74,11 @@ namespace our
             glm::vec3& playerCenter = player->parent->localTransform.position;
             for(auto asteroid : asteroids) {
                 glm::vec3 asteroidCenter = asteroid->localTransform.position;
-                // float distance = glm::distance(playerCenter, asteroidCenter);
-                // if (distance < 7) {
-                //     // return to initial position
-                //     playerCenter = glm::vec3(0, 0, 10);
-                //     score--;
-                //     world->markForRemoval(asteroid);
-                //     spaceshipCollide = true;
-                // }
-                if (detectCollision(asteroid, playerCenter)) {
+                if (detectCollision(asteroid, playerCenter,0.7f)) {
                     // return to initial position
                     playerCenter = glm::vec3(0, 0, 10);
-                    score--;
                     world->markForRemoval(asteroid);
+                    if(!shielded) score-=2;
                     spaceshipCollide = true;
                 }
             }
@@ -95,11 +87,11 @@ namespace our
             return;
         }
 
-        bool detectCollision(Entity* entity, glm::vec3 center) {
+        bool detectCollision(Entity* entity, glm::vec3 center, float factor) {
             float x = center[0], y = center[1], z = center[2];
-            float scaleX = entity->localTransform.scale[0];
-            float scaleY = entity->localTransform.scale[1];
-            float scaleZ = entity->localTransform.scale[2];
+            float scaleX = entity->localTransform.scale[0]*factor;
+            float scaleY = entity->localTransform.scale[1]*factor;
+            float scaleZ = entity->localTransform.scale[2]*factor;
 
             float Ex = entity->localTransform.position[0];
             float Ey = entity->localTransform.position[1];
@@ -113,7 +105,18 @@ namespace our
             return  ((x >= minX && x <= maxX) &&
                     (y >= minY && y <= maxY) &&
                     (z >= minZ && z <= maxZ));
+
+            // alternative collision detection for player
+            // float distance = glm::distance(playerCenter, asteroidCenter);
+            // if (distance < 7) {
+            //     // return to initial position
+            //     playerCenter = glm::vec3(0, 0, 10);
+            //     score--;
+            //     world->markForRemoval(asteroid);
+            //     spaceshipCollide = true;
+            // }
         }
+        
 
     };
 

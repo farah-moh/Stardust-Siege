@@ -15,7 +15,7 @@
 using namespace std;
 
 // This state shows how to use some of the abstractions we created to make a menu.
-class Losestate: public our::State {
+class Winstate: public our::State {
 
     // A meterial holding the menu shader and the menu texture to draw
     our::TexturedMaterial* menuMaterial;
@@ -27,7 +27,7 @@ class Losestate: public our::State {
     float time;
 
     std::string getName() override {
-        return "lose";
+        return "win";
     }
     void onInitialize() override {
         // First, we create a material for the menu's background
@@ -38,7 +38,7 @@ class Losestate: public our::State {
         menuMaterial->shader->attach("assets/shaders/textured.frag", GL_FRAGMENT_SHADER);
         menuMaterial->shader->link();
         // Then we load the menu texture
-        menuMaterial->texture = our::texture_utils::loadImage("assets/textures/lose.png");
+        menuMaterial->texture = our::texture_utils::loadImage("assets/textures/win.png");
         // Initially, the menu material will be black, then it will fade in (Green Tint)
         menuMaterial->tint = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 
