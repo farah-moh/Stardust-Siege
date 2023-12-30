@@ -25,8 +25,11 @@ namespace our
     {
     private:
         ll curr_time;
+        ll curr_time_boss;
         ll delay;
+        ll bossDelay = 50;
         float lowSpeed, highSpeed;
+        int bossPositionDelta = 1;
 
         glm::vec3 position0 = glm::vec3(-1,-1,-3);
         glm::vec3 position1 = glm::vec3(1,-1,-3);
@@ -34,7 +37,7 @@ namespace our
 
         std::vector<glm::vec3> positions = {position0, position1, position2};
 
-        float generateRandomFloat(float min = -20, float max = 20)
+        float generateRandomFloat(float min = -30, float max = 30)
         {
             return min + rand() * (max - min) / RAND_MAX;
         }
@@ -61,9 +64,14 @@ namespace our
         void update(World *world, float deltaTime)
         {
             ll now = glfwGetTime()*1000;
+
+            checkBossPos(world);
+
             if (now - curr_time < delay)
                 return;
 
+            const unordered_set<Entity *> entities = world->getEntities();
+            
             curr_time = glfwGetTime()*1000;
 
             vector<Entity*> RGBlights;
@@ -82,7 +90,6 @@ namespace our
             entity->localTransform.position = position;
             entity->getComponent<MovementComponent>()->linearVelocity = speed;
 
-            const unordered_set<Entity *> entities = world->getEntities();
             // remove asteroids not in the screen
             for (auto entity : entities)
             {
@@ -120,6 +127,31 @@ namespace our
             RGBlights[2]->localTransform.position = positions[(curr_time%3+2)%3];
 
             world->deleteMarkedEntities();
+        }
+
+        void checkBossPos(World* world) {
+            ll now = glfwGetTime()*1000;
+
+            if (now - curr_time_boss < bossDelay)
+                return;
+            
+            curr_time_boss = glfwGetTime()*1000;
+
+            Entity* boss = nullptr;
+            const unordered_set<Entity *> entities = world->getEntities();
+            for (auto entity : entities)
+            {
+                if(entity->name == "boss")  {
+                    boss = entity;
+                    break;
+                }
+            }
+
+            if(boss) {
+                boss->localTransform.position[0] += bossPositionDelta*4;
+                if(boss->localTransform.position[0] > 40) bossPositionDelta = -1;
+                else if(boss->localTransform.position[0] < -40) bossPositionDelta = 1;
+            }
         }
     };
 
