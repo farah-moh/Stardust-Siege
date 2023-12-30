@@ -59,7 +59,7 @@ namespace our {
         Texture2D *albedo; // maps to diffuse
         Texture2D *specular; // maps to specular
         Texture2D *roughness; //maps to 1-shininess
-        Texture2D *emissive;
+        Texture2D *emissive; 
         Texture2D *ambient_occlusion; // ambient
         Sampler* sampler; // using one sampler to share the options
 

@@ -166,10 +166,12 @@ namespace our
             if (!camera)
                 camera = entity->getComponent<CameraComponent>();
 
+            // check if the entity has a light component and add it to the lights vector
             if (auto light = entity->getComponent<LightComponent>(); light)
             {
                 LightObject* lightObject = new LightObject(light); // calling constructor to set the values except position and direction
-                lightObject->position = glm::vec3(entity->getLocalToWorldMatrix() * glm::vec4(0.0f, 0.0f, 0.0f, 1.0f)); 
+                lightObject->position = glm::vec3(entity->getLocalToWorldMatrix() * glm::vec4(0.0f, 0.0f, 0.0f, 1.0f)); // M * (0, 0, 0, 1)
+                // (0,-1,0) light is coming from upside on the entity, and we convert it to world space
                 lightObject->direction = glm::vec3(entity->getLocalToWorldMatrix() * glm::vec4(0.0f, -1.0f, 0.0f, 0.0f));
 
                 lights.push_back(*lightObject);
@@ -255,14 +257,20 @@ namespace our
         //  Don't forget to set the "transform" uniform to be equal the model-view-projection matrix for each render command
 
         for (auto command : opaqueCommands) {
+            // call the setup function of the material to set the pipeline state and the shader
             command.material->setup();
-
+            // Send local to world matrix, its inverse transform of the rendered object to the light.vert
+            // camera position, VP matrix
+            // To calculate view vector, normal to the vertex, and its position
             command.material->shader->set("M", command.localToWorld);
             command.material->shader->set("M_I_T", glm::transpose(glm::inverse(command.localToWorld)));
             glm::vec4 eye = camera->getOwner()->getLocalToWorldMatrix() * glm::vec4(0, 0, 0, 1);    // (0,0,0) position of camera in its local space, 1 for point
             command.material->shader->set("camera_position", glm::vec3(eye));
             command.material->shader->set("VP", VP );
+
+            // Call setup of the light object to set the light uniforms in the shader
             LightObject::setup(command, lights);
+            
             // This matrix is used by the shader to transform the object's vertices from world space to clip space
             command.material->shader->set("transform", VP * command.localToWorld);
             command.mesh->draw();
@@ -317,6 +325,7 @@ namespace our
             command.material->shader->set("camera_position", glm::vec3(eye));
             command.material->shader->set("VP", VP );
 
+            // Call setup of the light object to set the light uniforms in the shader
             LightObject::setup(command, lights);
             // This matrix is used by the shader to transform the object's vertices from world space to clip space
             command.material->shader->set("transform", VP * command.localToWorld);
