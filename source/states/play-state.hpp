@@ -13,6 +13,7 @@
 // This state shows how to use the ECS framework and deserialization.
 class Playstate: public our::State {
     float doomTime = 0.0;
+    float shakeTime = 0.0;
     our::World world;
     our::ForwardRenderer renderer;
     our::FreeCameraControllerSystem cameraController;
@@ -57,29 +58,48 @@ class Playstate: public our::State {
             asteroidGenerator->update(&world, (float)deltaTime);
         collision.update(&world, (float)deltaTime);
 
-        if(collision.bulletCollide) {
-
-        }
-
-        if(collision.spaceshipCollide && !getApp()->getTimer()) {
-            renderer.setDoomed(true);   // Set the renderer to Doom mode
-            getApp()->setTimer(true);   // Set the timer (to start the countdown, and to make sure no doom mode is set again)
-            doomTime = glfwGetTime();          // The start time of the doom mode
-            getApp()->setCountdownTime(doomTime);  // Set the countdown time (to be used in application class)   
-        }
-        // This condition is used to make sure that the doom mode is set for 5 seconds (Pauses excluded)
-        if ((glfwGetTime()  > (0.5f + doomTime)) && getApp()->getTimer()) {
-            
-            getApp()->setTimer(false);
-            // getApp()->setCountdown(2);
-            renderer.setDoomed(false);
-        }
         // And finally we use the renderer system to draw the scene
         renderer.render(&world);
         getApp()->setScore(collision.score);
         if(getApp()->getScore() < 0) {
             getApp()->changeState("lose");
         }
+
+        // ################# Postprocessing Effects #################
+        // shake effect on collision spaceship with asteroid
+        if(collision.bulletCollide && !getApp()->getTimer()) {
+            std::cout << "Inside bullet collision \n";
+            // renderer.setDoomed(false);   // Set the renderer to Doom mode
+            renderer.setShaken(true);   // Set the renderer to Doom mode
+            getApp()->setTimer(true);   // Set the timer (to start the countdown, and to make sure no doom mode is set again)
+            shakeTime = glfwGetTime();          // The start time of the doom mode
+            getApp()->setCountdownTime(shakeTime);  // Set the countdown time (to be used in application class)   
+        }
+
+        // Doom effect on collision spaceship with asteroid
+        if(collision.spaceshipCollide && !getApp()->getTimer()) {
+            std::cout << "Inside body collision \n";
+            // renderer.setShaken(false);   // Set the renderer to Doom mode
+            renderer.setDoomed(true);   // Set the renderer to Doom mode
+            getApp()->setTimer(true);   // Set the timer (to start the countdown, and to make sure no doom mode is set again)
+            doomTime = glfwGetTime();          // The start time of the doom mode
+            getApp()->setCountdownTime(doomTime);  // Set the countdown time (to be used in application class)   
+        }
+
+        // Check if the timer of shaken effect lasted 0.5 seconds
+        if ((glfwGetTime()  > (0.5f + shakeTime)) && renderer.getShaked()) {
+             std::cout << "Out condition shake \n";
+            getApp()->setTimer(false);
+            // getApp()->setCountdown(2);
+            renderer.setShaken(false);
+        }
+        // Check if the timer of doom effect lasted 0.5 seconds
+        if ((glfwGetTime()  > (0.5f + doomTime)) && getApp()->getTimer()) {
+            getApp()->setTimer(false);
+            // getApp()->setCountdown(2);
+            renderer.setDoomed(false);
+        }
+
         // Get a reference to the keyboard object
         auto& keyboard = getApp()->getKeyboard();
 

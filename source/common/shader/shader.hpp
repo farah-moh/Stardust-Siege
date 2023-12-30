@@ -5,6 +5,7 @@
 #include <glad/gl.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <GLFW/glfw3.h>
 
 namespace our
 {
@@ -116,6 +117,12 @@ namespace our
             // 1: only one matrix, false: dont transpose before u send to shader
             // glm::value_ptr(matrix): obtains a pointer to the internal data of the "matrix" object
             glUniformMatrix4fv(getUniformLocation(uniform), 1, false, glm::value_ptr(matrix));
+        }
+
+        void setTime(const std::string &uniform){
+            glUseProgram(program);
+            glUniform1f(getUniformLocation(uniform),float(glfwGetTime()));
+            glUseProgram(0);
         }
 
         // TODO: (Req 1) Delete the copy constructor and assignment operator.
