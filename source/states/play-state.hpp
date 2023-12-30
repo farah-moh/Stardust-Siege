@@ -66,7 +66,6 @@ class Playstate: public our::State {
         // ################# Postprocessing Effects #################
         // shake effect on collision spaceship with asteroid
         if(collision.bulletCollide && !getApp()->getTimer()) {
-            std::cout << "Inside bullet collision \n";
             // renderer.setDoomed(false);   // Set the renderer to Doom mode
             renderer.setShaken(true);   // Set the renderer to Doom mode
             getApp()->setTimer(true);   // Set the timer (to start the countdown, and to make sure no doom mode is set again)
@@ -77,7 +76,6 @@ class Playstate: public our::State {
         // Doom effect on collision spaceship with asteroid
         if(collision.spaceshipCollide) {
             if(!getApp()->getTimer()) {
-                std::cout << "Inside body collision \n";
                 // renderer.setShaken(false);   // Set the renderer to Doom mode
                 renderer.setDoomed(true);   // Set the renderer to Doom mode
                 getApp()->setTimer(true);   // Set the timer (to start the countdown, and to make sure no doom mode is set again)

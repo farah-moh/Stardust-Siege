@@ -109,6 +109,7 @@ set(STATES_SOURCES
         source/states/play-state.hpp
         source/states/menu-state.hpp
         source/states/lose-state.hpp
+        source/states/help-state.hpp
 )
 
 # For each example, we add an executable target
