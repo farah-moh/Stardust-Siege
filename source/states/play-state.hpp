@@ -60,16 +60,15 @@ class Playstate: public our::State {
         if(collision.bulletCollide) {
 
         }
-        std::cout << "INSIDE SPACE SHIP COLLIDE " << collision.spaceshipCollide << " \n";
+
         if(collision.spaceshipCollide && !getApp()->getTimer()) {
-            std::cout << "INSIDE SPACE SHIP COLLIDE\n";
             renderer.setDoomed(true);   // Set the renderer to Doom mode
             getApp()->setTimer(true);   // Set the timer (to start the countdown, and to make sure no doom mode is set again)
             doomTime = glfwGetTime();          // The start time of the doom mode
             getApp()->setCountdownTime(doomTime);  // Set the countdown time (to be used in application class)   
         }
         // This condition is used to make sure that the doom mode is set for 5 seconds (Pauses excluded)
-        if ((glfwGetTime()  > (2.0f + doomTime)) && getApp()->getTimer()) {
+        if ((glfwGetTime()  > (0.5f + doomTime)) && getApp()->getTimer()) {
             
             getApp()->setTimer(false);
             // getApp()->setCountdown(2);
@@ -88,6 +87,7 @@ class Playstate: public our::State {
             // If the escape  key is pressed in this frame, go to the play state
             getApp()->changeState("menu");
         }
+
     }
 
     void onDestroy() override {
