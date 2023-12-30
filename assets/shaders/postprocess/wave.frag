@@ -32,4 +32,6 @@ void main() {
     }
 
     frag_color /= STEPS;
+
+
 }

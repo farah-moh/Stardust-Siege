@@ -88,8 +88,9 @@ namespace our
         TexturedMaterial *postprocessMaterial;
 
         // Booleans to check on for postprocessing effects
-        bool doomed = false; // if the player hit a asteroid
-        std::string normalPath, doomPath;
+        bool doomed = false;    // if the player hit a asteroid
+        bool shaken = false;    // if the bullet hit the asteroid
+        std::string  normalPath, doomPath, shakePath; 
 
     public:
         // Initialize the renderer including the sky and the Postprocessing objects.
@@ -102,6 +103,8 @@ namespace our
 
         // Set Doom effect
         void setDoomed(bool doom) { this->doomed = doom; }
+        void setShaken(bool shake) { this->shaken = shake; }
+        bool getShaked() {return shaken;}
     };
 
 }

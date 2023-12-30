@@ -65,6 +65,7 @@ namespace our
             // TODO: (Req 11) Create a framebuffer
             // Set Doom, Normal, and Charge paths
             doomPath = config.value<std::string>("doomed", "");
+            shakePath = config.value<std::string>("shaken", "");
             normalPath = config.value<std::string>("postprocess", "");
             // Generating 1(no of buffers) frameBuffer
             // This will be useful for post-processing effects, such as applying filters or bloom
@@ -148,6 +149,7 @@ namespace our
             delete postprocessMaterial->shader;
             delete postprocessMaterial;
             doomed = false;
+            shaken = false;
         }
     }
 
@@ -323,17 +325,19 @@ namespace our
             postprocessShader->attach("assets/shaders/fullscreen.vert", GL_VERTEX_SHADER);
             if(doomed) // Doom effect
                 postprocessShader->attach(doomPath, GL_FRAGMENT_SHADER);
+            else if(shaken)
+                postprocessShader->attach(shakePath, GL_FRAGMENT_SHADER);
             else
                 postprocessShader->attach(normalPath, GL_FRAGMENT_SHADER);
 
             postprocessShader->link();
-            // postprocessShader->setTime("time");
+            postprocessShader->setTime("time");
             postprocessMaterial->shader = postprocessShader;
 
             // TODO: (Req 11) Return to the default framebuffer
             // This is necessary because the rendering has been targeting the offscreen textures during the main rendering pass. 
             // Switching back to the default framebuffer ensures that the final output is displayed on the window
-            glBindFramebuffer(GL_FRAMEBUFFER,0);
+            glBindFramebuffer(GL_DRAW_FRAMEBUFFER,0);
 
             // TODO: (Req 11) Setup the postprocess material and draw the fullscreen triangle
             postprocessMaterial->setup();
