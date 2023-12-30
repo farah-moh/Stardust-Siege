@@ -641,6 +641,21 @@
         },
         "world":[
             {
+                "name": "light",
+                "position": [0, 1, 1],
+                "rotation": [45, 45, 0],
+                "components": [
+                    {
+                        "type": "Light",
+                        "lightType": "directional",
+                        "specular": [0.8, 0.8, 0.8],
+                        "diffuse": [0.8, 0.8, 0.8],
+                        "ambient": [0.3, 0.3, 0.3],
+                        "attenuation": [0.1, 0, 0]
+                    }
+                ]
+            },
+            {
                 "position": [0, 0, 10],
                 "components": [
                     {
