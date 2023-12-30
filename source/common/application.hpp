@@ -84,6 +84,8 @@ namespace our {
             timer = false;
             countdown = 2;
             countdownTime = 0.0f;
+            int playerHealth = 5;
+            int bossHealth = 10;
         }
         // On destruction, delete all the states
         ~Application(){ for (auto &it : states) delete it.second; }

@@ -26,6 +26,7 @@ namespace our
     private:
         ll curr_time;
         ll delay;
+        float lowSpeed, highSpeed;
 
         glm::vec3 position0 = glm::vec3(-1,-1,-3);
         glm::vec3 position1 = glm::vec3(1,-1,-3);
@@ -33,23 +34,28 @@ namespace our
 
         std::vector<glm::vec3> positions = {position0, position1, position2};
 
-        float generateRandomFloat(float min = -40, float max = 40)
+        float generateRandomFloat(float min = -20, float max = 20)
         {
             return min + rand() * (max - min) / RAND_MAX;
         }
 
-        float generateRandomSpeed(float min = 10, float max = 30)
+        float generateRandomSpeed()
         {
+            float min = lowSpeed;
+            float max = highSpeed;
             return min + rand() * (max - min) / RAND_MAX;
         }
 
     public:
         nlohmann::json asteroid;
 
-        AsteroidsGenerator(const nlohmann::json &asteroid) : curr_time(0), delay(500)
+        AsteroidsGenerator(const nlohmann::json &asteroid, float lowSpeed = 10, float highSpeed = 30, ll delay = 500) : curr_time(0)
         {
             srand(time(0));
+            this->delay = delay;
             this->asteroid = asteroid;
+            this->lowSpeed = lowSpeed;
+            this->highSpeed = highSpeed;
         }
 
         void update(World *world, float deltaTime)
@@ -68,7 +74,7 @@ namespace our
             Entity *entity = nullptr;
 
             entity = world->addEntityAndDeserialize(asteroid);
-            position = glm::vec3(generateRandomFloat(), generateRandomFloat(), -60);
+            position = glm::vec3(generateRandomFloat(), generateRandomFloat(), -100);
             speed = glm::vec3(0, 0, generateRandomSpeed());
 
             if (!entity)
@@ -98,7 +104,7 @@ namespace our
                     // get the position of the entity
                     glm::vec3 &position = entity->localTransform.position;
                     // if the position of the entity is greater than 60
-                    if (position.z < -20)
+                    if (position.z < -100)
                     {
                         // delete the entity
                         world->markForRemoval(entity);
