@@ -90,7 +90,6 @@ class Playstate: public our::State {
 
         // Check if the timer of shaken effect lasted 0.5 seconds
         if ((glfwGetTime()  > (0.5f + shakeTime)) && renderer.getShaked()) {
-             std::cout << "Out condition shake \n";
             getApp()->setTimer(false);
             // getApp()->setCountdown(2);
             renderer.setShaken(false);
