@@ -109,7 +109,7 @@ void main() {
         vec3 ambient = sampled.ambient * light.ambient;
         //add the effect of this light to the effects of all prior lights and account for attenuation
         accumulated_light += (diffuse + specular + ambient) * attenuation;
-    }
+    }   
 
     //use the albedo's alpha for transperancy
     frag_color = fsin.color * vec4(accumulated_light + sampled.emissive, texture(tex_material.albedo, fsin.tex_coord).a);

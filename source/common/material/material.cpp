@@ -147,12 +147,12 @@ namespace our {
         Material::deserialize(data);
         if (!data.is_object())
             return;
-            
-        albedo = AssetLoader<Texture2D>::get(data.value("albedo", "black"));
-        specular = AssetLoader<Texture2D>::get(data.value("specular", "black"));
-        roughness = AssetLoader<Texture2D>::get(data.value("roughness", "black"));
-        emissive = AssetLoader<Texture2D>::get(data.value("emissive", "black"));
-        ambient_occlusion = AssetLoader<Texture2D>::get(data.value("ambient_occlusion", "white"));
+
+        albedo = AssetLoader<Texture2D>::get(data.value("albedo", ""));
+        specular = AssetLoader<Texture2D>::get(data.value("specular", ""));
+        roughness = AssetLoader<Texture2D>::get(data.value("roughness", ""));
+        emissive = AssetLoader<Texture2D>::get(data.value("emissive", ""));
+        ambient_occlusion = AssetLoader<Texture2D>::get(data.value("ambient_occlusion", ""));
         sampler = AssetLoader<Sampler>::get(data.value("sampler", ""));
 
     }
