@@ -126,7 +126,7 @@ namespace our
                 shielded = true;
             }
 
-            if(app->getKeyboard().isPressed(GLFW_KEY_SPACE)) {
+            if(app->getKeyboard().justPressed(GLFW_KEY_SPACE)) {
                 DJAmro7a7a->play2D("assets/sounds/bullet2.0.mp3", false, false, true);
                 auto config = app->getConfig();
                 // get the bullet config
