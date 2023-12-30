@@ -75,7 +75,7 @@ namespace our
                 if (distance < 7) {
                     // return to initial position
                     playerCenter = glm::vec3(0, 0, 10);
-                    score--;
+                    score-=3;
                     world->markForRemoval(asteroid);
                     spaceshipCollide = true;
                 }

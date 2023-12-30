@@ -32,6 +32,11 @@ namespace our
             return min + rand() * (max - min) / RAND_MAX;
         }
 
+        float generateRandomSpeed(float min = 10, float max = 30)
+        {
+            return min + rand() * (max - min) / RAND_MAX;
+        }
+
     public:
         nlohmann::json asteroid;
 
@@ -49,14 +54,17 @@ namespace our
             curr_time = glfwGetTime()*1000;
 
             glm::vec3 position;
+            glm::vec3 speed;
             Entity *entity = nullptr;
 
             entity = world->addEntityAndDeserialize(asteroid);
             position = glm::vec3(generateRandomFloat(), generateRandomFloat(), -60);
+            speed = glm::vec3(0, 0, generateRandomSpeed());
 
             if (!entity)
                 return;
             entity->localTransform.position = position;
+            entity->getComponent<MovementComponent>()->linearVelocity = speed;
 
             // remove asteroids not in the screen
             const unordered_set<Entity *> entities = world->getEntities();
