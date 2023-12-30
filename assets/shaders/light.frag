@@ -102,16 +102,16 @@ void main() {
         vec3 reflected = reflect(light_direction, normal);
         //negative is taken as normal is pointing away from the object but light is pointing towards
         float lambert = max(0.0f, dot(normal, -light_direction));
-        float phong = pow(max(0.0f, dot(view, reflected)), material.shininess);
+        float phong = pow(max(0.0f, dot(view, reflected)), sampled.shininess);
 
-        vec3 diffuse = material.diffuse * light.diffuse * lambert;
-        vec3 specular = material.specular * light.specular * phong;
-        vec3 ambient = material.ambient * light.ambient;
+        vec3 diffuse = sampled.diffuse * light.diffuse * lambert;
+        vec3 specular = sampled.specular * light.specular * phong;
+        vec3 ambient = sampled.ambient * light.ambient;
         //add the effect of this light to the effects of all prior lights and account for attenuation
         accumulated_light += (diffuse + specular + ambient) * attenuation;
     }
-    
+
     //use the albedo's alpha for transperancy
-    frag_color = fsin.color * vec4(accumulated_light + sampled.emissive, texture(material.albedo_map, fsin.tex_coord).a);
+    frag_color = fsin.color * vec4(accumulated_light + sampled.emissive, texture(tex_material.albedo, fsin.tex_coord).a);
 
 }

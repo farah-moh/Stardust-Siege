@@ -194,7 +194,7 @@
                         "children": [
                             {
                                 "name": "light",
-                                "position": [0, 0, -3],
+                                "position": [0, 0, 0],
                                 "rotation": [0, -90, 0],
                                 "components": [
                                     {
