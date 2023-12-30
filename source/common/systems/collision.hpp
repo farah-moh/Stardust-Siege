@@ -34,6 +34,9 @@ namespace our
 
         // This should be called every frame to update all entities containing a FreeCameraControllerComponent 
         void update(World* world, float deltaTime) {
+
+            bulletCollide = 0;
+            spaceshipCollide = 0;
             
             std::vector<Entity*> bullets;
             std::vector<Entity*> asteroids;
@@ -71,11 +74,18 @@ namespace our
             glm::vec3& playerCenter = player->parent->localTransform.position;
             for(auto asteroid : asteroids) {
                 glm::vec3 asteroidCenter = asteroid->localTransform.position;
-                float distance = glm::distance(playerCenter, asteroidCenter);
-                if (distance < 7) {
+                // float distance = glm::distance(playerCenter, asteroidCenter);
+                // if (distance < 7) {
+                //     // return to initial position
+                //     playerCenter = glm::vec3(0, 0, 10);
+                //     score--;
+                //     world->markForRemoval(asteroid);
+                //     spaceshipCollide = true;
+                // }
+                if (detectCollision(asteroid, playerCenter)) {
                     // return to initial position
                     playerCenter = glm::vec3(0, 0, 10);
-                    score-=3;
+                    score--;
                     world->markForRemoval(asteroid);
                     spaceshipCollide = true;
                 }

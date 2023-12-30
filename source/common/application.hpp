@@ -64,6 +64,9 @@ namespace our {
         State * currentState = nullptr;         // This will store the current scene that is being run
         State * nextState = nullptr;            // If it is requested to go to another scene, this will contain a pointer to that scene
         int score = 0;
+        float countdownTime = 0;
+        int countdown = 2;
+        bool timer = false;
 
         
         // Virtual functions to be overrode and change the default behaviour of the application
@@ -75,7 +78,11 @@ namespace our {
     public:
 
         // Create an application with following configuration
-        Application(const nlohmann::json& app_config) : app_config(app_config) {}
+        Application(const nlohmann::json& app_config) : app_config(app_config) {
+            timer = false;
+            countdown = 2;
+            countdownTime = 0.0f;
+        }
         // On destruction, delete all the states
         ~Application(){ for (auto &it : states) delete it.second; }
 
@@ -117,6 +124,25 @@ namespace our {
 
         int getScore() {
             return score;
+        }
+        
+        // set Timer
+        void setTimer(bool time) { 
+            this->timer = time; 
+        }
+
+        // get Timer
+        bool getTimer() { 
+            return timer; 
+        }
+
+        void setCountdownTime(float time) {
+            this->countdownTime = time;
+        }
+
+        // set countDown
+        void setCountdown(int count) {
+            this->countdown = count;
         }
 
         // Class Getters.

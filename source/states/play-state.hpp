@@ -12,7 +12,7 @@
 
 // This state shows how to use the ECS framework and deserialization.
 class Playstate: public our::State {
-
+    float doomTime = 0.0;
     our::World world;
     our::ForwardRenderer renderer;
     our::FreeCameraControllerSystem cameraController;
@@ -60,10 +60,20 @@ class Playstate: public our::State {
         if(collision.bulletCollide) {
 
         }
-        if(collision.spaceshipCollide) {
-            
-        }
 
+        if(collision.spaceshipCollide && !getApp()->getTimer()) {
+            renderer.setDoomed(true);   // Set the renderer to Doom mode
+            getApp()->setTimer(true);   // Set the timer (to start the countdown, and to make sure no doom mode is set again)
+            doomTime = glfwGetTime();          // The start time of the doom mode
+            getApp()->setCountdownTime(doomTime);  // Set the countdown time (to be used in application class)   
+        }
+        // This condition is used to make sure that the doom mode is set for 5 seconds (Pauses excluded)
+        if ((glfwGetTime()  > (0.5f + doomTime)) && getApp()->getTimer()) {
+            
+            getApp()->setTimer(false);
+            // getApp()->setCountdown(2);
+            renderer.setDoomed(false);
+        }
         // And finally we use the renderer system to draw the scene
         renderer.render(&world);
         getApp()->setScore(collision.score);
@@ -77,6 +87,7 @@ class Playstate: public our::State {
             // If the escape  key is pressed in this frame, go to the play state
             getApp()->changeState("menu");
         }
+
     }
 
     void onDestroy() override {

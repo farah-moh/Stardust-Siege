@@ -12,7 +12,8 @@
     "scene": {
         "renderer":{
             "sky": "assets/textures/galactic.jpeg",
-            "postprocess": "assets/shaders/postprocess/vignette.frag"
+            "postprocess": "assets/shaders/postprocess/vignette.frag",
+            "doomed": "assets/shaders/postprocess/wave.frag"
         },
         "assets":{
             "shaders":{

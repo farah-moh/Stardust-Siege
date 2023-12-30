@@ -87,6 +87,10 @@ namespace our
         Texture2D *colorTarget, *depthTarget;
         TexturedMaterial *postprocessMaterial;
 
+        // Booleans to check on for postprocessing effects
+        bool doomed = false;    // if the player hit a asteroid
+        std::string  normalPath, doomPath; 
+
     public:
         // Initialize the renderer including the sky and the Postprocessing objects.
         // windowSize is the width & height of the window (in pixels).
@@ -95,6 +99,9 @@ namespace our
         void destroy();
         // This function should be called every frame to draw the given world
         void render(World *world);
+        
+        // Set Doom effect
+        void setDoomed(bool doom) { this->doomed = doom; }
     };
 
 }
