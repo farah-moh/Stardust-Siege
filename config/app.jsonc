@@ -35,7 +35,7 @@
                 "moon": "assets/textures/moon.jpg",
                 "grass": "assets/textures/grass_ground_d.jpg",
                 "wood": "assets/textures/wood.jpg",
-                "glass": "assets/textures/glass-panels.png",
+                "glass": "assets/textures/steel.jfif",
                 "shield": "assets/textures/shield.png",
                 "monkey": "assets/textures/monkey.png",
                 "asteroid" : "assets/textures/asteroid.png",
@@ -92,7 +92,7 @@
                         "depthMask": false
                     },
                     "transparent": true,
-                    "tint": [1, 1, 1, 1],
+                    "tint": [1, 1, 1, 0.7],
                     "texture": "glass",
                     "sampler": "pixelated"
                 },
