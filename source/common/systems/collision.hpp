@@ -87,9 +87,9 @@ namespace our
 
         bool detectCollision(Entity* entity, glm::vec3 center) {
             float x = center[0], y = center[1], z = center[2];
-            float scaleX = entity->localTransform.scale[0]*3;
-            float scaleY = entity->localTransform.scale[1]*3;
-            float scaleZ = entity->localTransform.scale[2]*3;
+            float scaleX = entity->localTransform.scale[0];
+            float scaleY = entity->localTransform.scale[1];
+            float scaleZ = entity->localTransform.scale[2];
 
             float Ex = entity->localTransform.position[0];
             float Ey = entity->localTransform.position[1];

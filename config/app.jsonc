@@ -353,7 +353,7 @@
                     {
                         "type": "Movement",
                         "angularVelocity": [0, 0, 0],
-                        "linearVelocity": [0, 0, -5]
+                        "linearVelocity": [0, 0, -50]
                     }
                 ]
             },
