@@ -105,14 +105,37 @@ namespace our
 
             // We change the camera position based on the keys WASD/QE
             // S & W moves the player back and forth
-            if(app->getKeyboard().isPressed(GLFW_KEY_W)) position += front * (deltaTime * current_sensitivity.z);
+            glm::vec3& playerRotation = player->localTransform.rotation;
+            bool isRotating = false;
+            if(app->getKeyboard().isPressed(GLFW_KEY_W)) {
+                position += front * (deltaTime * current_sensitivity.z);
+                // tilting logic
+                if (playerRotation.z < 0.1) {
+                    isRotating = true;
+                    playerRotation.z += 0.01f;
+                }
+            }
             if(app->getKeyboard().isPressed(GLFW_KEY_S)) position -= front * (deltaTime * current_sensitivity.z);
             // Q & E moves the player up and down
             if(app->getKeyboard().isPressed(GLFW_KEY_Q)) position += up * (deltaTime * current_sensitivity.y);
             if(app->getKeyboard().isPressed(GLFW_KEY_E)) position -= up * (deltaTime * current_sensitivity.y);
             // A & D moves the player left or right 
-            if(app->getKeyboard().isPressed(GLFW_KEY_D)) position += right * (deltaTime * current_sensitivity.x);
-            if(app->getKeyboard().isPressed(GLFW_KEY_A)) position -= right * (deltaTime * current_sensitivity.x);
+            if(app->getKeyboard().isPressed(GLFW_KEY_D)) {
+                position += right * (deltaTime * current_sensitivity.x);
+                // tilting logic
+                if (playerRotation.x > -1.0) {
+                    isRotating = true;
+                    playerRotation.x -= 0.1f;
+                }
+            }
+            if(app->getKeyboard().isPressed(GLFW_KEY_A)) {
+                position -= right * (deltaTime * current_sensitivity.x);
+                // tilting logic
+                if (playerRotation.x < 1.0) {
+                    isRotating = true;
+                    playerRotation.x += 0.1f;
+                }
+            }
             // return to initial position
             if(app->getKeyboard().isPressed(GLFW_KEY_R)) position = glm::vec3(0, 0, 10);
             // apply powerup
@@ -137,6 +160,36 @@ namespace our
                 bulletJson["rotation"] = {270,0,0};
 
                 world->addEntityAndDeserialize(bulletJson);
+            }
+
+            // undoing tilting
+            if (!isRotating)
+            {
+                if (playerRotation.x < 0.1 && playerRotation.x > -0.1)
+                {
+                    playerRotation.x = 0;
+                }
+                if (playerRotation.x > 0)
+                {
+                    playerRotation.x -= 0.1f;
+                }
+                else if (playerRotation.x < 0)
+                {
+                    playerRotation.x += 0.1f;
+                }
+
+                if (playerRotation.z < 0.1 && playerRotation.z > -0.1)
+                {
+                    playerRotation.z = 0;
+                }
+                if (playerRotation.z > 0)
+                {
+                    playerRotation.z -= 0.01f;
+                }
+                else if (playerRotation.z < 0)
+                {
+                    playerRotation.z += 0.01f;
+                }
             }
         }
 
