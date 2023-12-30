@@ -82,19 +82,22 @@ namespace our {
 
     void LitMaterial::setup() const
     {
-        // Calling the parent (Material) setup function
+        // Calling the parent (Material) setup function to setup the pipeline state and shader
         Material::setup();
 
+        // Binding the textures and samplers to their respective texture units
         glActiveTexture(GL_TEXTURE0);
+        // binds the albedo texture to the currently active texture unit. If not, it unbinds any texture that might be currently bound to the active texture unit.
         if (albedo)
             albedo->bind();
         else
             Texture2D::unbind();
+        // Binding the sampler to unit 0 if it's not null, otherwise, we unbind it
         if (sampler)
             sampler->bind(0);
         else
             Sampler::unbind(0);
-        //Setting uniform tex_material.albedo in shader
+        //Setting uniform tex_material.albedo in shader to 0 to indicate that the albedo texture is bound to texture unit 0
         shader->set("tex_material.albedo", 0);
 
         glActiveTexture(GL_TEXTURE1);
@@ -144,10 +147,12 @@ namespace our {
 
     void LitMaterial::deserialize(const nlohmann::json &data)
     {
+        // Calling the parent (Material) setup function to deserialize the pipeline state and shader 
         Material::deserialize(data);
         if (!data.is_object())
             return;
 
+        // Deserializing the textures and samplers from the json object
         albedo = AssetLoader<Texture2D>::get(data.value("albedo", ""));
         specular = AssetLoader<Texture2D>::get(data.value("specular", ""));
         roughness = AssetLoader<Texture2D>::get(data.value("roughness", ""));

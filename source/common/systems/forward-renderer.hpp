@@ -25,6 +25,7 @@ namespace our
         Material *material;
     };
 
+    // The light object stores the data of a light component in a way that is easier to use
     struct LightObject
     {
         LightType type;
@@ -35,6 +36,7 @@ namespace our
         glm::vec2 cone;
         glm::vec3 position;
         glm::vec3 direction;
+
         LightObject(LightComponent *light)
         {
             type = light->type;
@@ -44,11 +46,13 @@ namespace our
             attenuation = light->attenuation;
             cone = light->cone;
         }
+
         void static setup(RenderCommand &command, std::vector<LightObject> &lights)
         {
             int index = 0;
             for (auto &light : lights)
             {
+                // make a uniform name for each light in the shader, e.g. "lights[index].type"
                 std::string name = "lights[" + std::to_string(index++) + "].";
                 command.material->shader->set(name + "type", (int)light.type);
                 command.material->shader->set(name + "diffuse", light.diffuse);
@@ -59,6 +63,7 @@ namespace our
                 command.material->shader->set(name + "attenuation", light.attenuation);
                 command.material->shader->set(name + "cone", light.cone);
             }
+            // set the light count uniform in the shader
             command.material->shader->set("light_count", (int)lights.size());
         }
     };
