@@ -204,7 +204,7 @@ int our::Application::run(int run_for_frames) {
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO();
-    ImFont *font = io.Fonts->AddFontFromFileTTF("assets\\fonts\\Pixellettersfull-BnJ5.ttf", 100.0f);
+    ImFont *font = io.Fonts->AddFontFromFileTTF("assets\\fonts\\Pixellettersfull-BnJ5.ttf", 50.0f);
     ImGui::StyleColorsDark();
 
     // Initialize ImGui for GLFW and OpenGL
@@ -271,8 +271,36 @@ int our::Application::run(int run_for_frames) {
             // Display the score
             ImGui::PushFont(font);
             string l1 = "Score: ";
-            string l2 = to_string(score);
+            string l2 = to_string(score) + "\t";
             string totalLine = l1 + l2;
+            ImGui::Text(totalLine.c_str());
+            ImGui::PopFont();
+
+            ImGui::End();
+        }
+        if(currentState->getName() == "boss") {
+            // Initialize the window size and position
+            ImGui::SetNextWindowSize(ImVec2(io.DisplaySize.x, io.DisplaySize.y));
+            ImGui::Begin(" ", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
+            ImGui::SetWindowPos(" ", ImVec2(0, 0));
+
+            // Initialize the style of the window (to set colors)
+            ImGuiStyle *style = &ImGui::GetStyle();
+
+            ImVec4 *colors = style->Colors;
+            colors[ImGuiCol_WindowBg] = ImVec4(0.0f, 0.0f, 0.0f, 0.0f);
+            colors[ImGuiCol_Border] = ImVec4(0.0f, 0.0f, 0.0f, 0.0f);
+
+            // Set Cursor Position
+            ImGui::SetCursorPosX(60/1200.0f*io.DisplaySize.x);
+            ImGui::SetCursorPosY(0);
+            // Display the score
+            ImGui::PushFont(font);
+            string l3 = "Player Health: ";
+            string l4 = to_string(playerHealth) + "\t\t\t\t\t\t\t";
+            string l5 = "Boss Health: ";
+            string l6 = to_string(bossHealth);
+            string totalLine = l3 + l4 + l5 + l6;
             ImGui::Text(totalLine.c_str());
             ImGui::PopFont();
 

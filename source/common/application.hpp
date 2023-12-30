@@ -64,6 +64,8 @@ namespace our {
         State * currentState = nullptr;         // This will store the current scene that is being run
         State * nextState = nullptr;            // If it is requested to go to another scene, this will contain a pointer to that scene
         int score = 0;
+        int playerHealth = 5;
+        int bossHealth = 10;
         float countdownTime = 0;
         int countdown = 2;
         bool timer = false;
@@ -118,32 +120,20 @@ namespace our {
             glfwSetWindowShouldClose(window, GLFW_TRUE);
         }
 
-        void setScore(int score) {
-            this->score = score;
-        }
+        void setScore(int score) {this->score = score;}
+        int getScore() {return score;}
 
-        int getScore() {
-            return score;
-        }
+        void setPlayerHealth(int playerHealth) {this->playerHealth = playerHealth;}
+        int getPlayerHealth() {return playerHealth;}
+
+        void setBossHealth(int bossHealth) {this->bossHealth = bossHealth;}
+        int getBossHealth() {return bossHealth;}
         
-        // set Timer
-        void setTimer(bool time) { 
-            this->timer = time; 
-        }
+        void setTimer(bool time) {this->timer = time;}
+        bool getTimer() {return timer;}
 
-        // get Timer
-        bool getTimer() { 
-            return timer; 
-        }
-
-        void setCountdownTime(float time) {
-            this->countdownTime = time;
-        }
-
-        // set countDown
-        void setCountdown(int count) {
-            this->countdown = count;
-        }
+        void setCountdownTime(float time) {this->countdownTime = time;}
+        void setCountdown(int count) {this->countdown = count;}
 
         // Class Getters.
         GLFWwindow* getWindow(){ return window; }
