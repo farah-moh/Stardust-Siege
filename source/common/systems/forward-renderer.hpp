@@ -9,6 +9,7 @@
 #include <glad/gl.h>
 #include <vector>
 #include <algorithm>
+#include <iostream>
 
 namespace our
 {
@@ -43,26 +44,25 @@ namespace our
             attenuation = light->attenuation;
             cone = light->cone;
         }
-            void static setup(RenderCommand &command, std::vector<LightObject> &lights)
-    {
-        int index = 0;
-        for (auto &light : lights)
+        void static setup(RenderCommand &command, std::vector<LightObject> &lights)
         {
-            std::string name = "lights[" + std::to_string(index++) + "].";
-            command.material->shader->set(name + "type", (int)light.type);
-            command.material->shader->set(name + "diffuse", light.diffuse);
-            command.material->shader->set(name + "specular", light.specular);
-            command.material->shader->set(name + "ambient", light.ambient);
-            command.material->shader->set(name + "position", light.position);
-            command.material->shader->set(name + "direction", light.direction);
-            command.material->shader->set(name + "attenuation", light.attenuation);
-            command.material->shader->set(name + "cone", light.cone);
+            int index = 0;
+            for (auto &light : lights)
+            {
+                std::string name = "lights[" + std::to_string(index++) + "].";
+                std::cout<<name<<std::endl;
+                command.material->shader->set(name + "type", (int)light.type);
+                command.material->shader->set(name + "diffuse", light.diffuse);
+                command.material->shader->set(name + "specular", light.specular);
+                command.material->shader->set(name + "ambient", light.ambient);
+                command.material->shader->set(name + "position", light.position);
+                command.material->shader->set(name + "direction", light.direction);
+                command.material->shader->set(name + "attenuation", light.attenuation);
+                command.material->shader->set(name + "cone", light.cone);
+            }
+            command.material->shader->set("light_count", (int)lights.size());
         }
-        command.material->shader->set("light_count", (int)lights.size());
-    }
     };
-
-
 
     // A forward renderer is a renderer that draw the object final color directly to the framebuffer
     // In other words, the fragment shader in the material should output the color that we should see on the screen
@@ -88,8 +88,8 @@ namespace our
         TexturedMaterial *postprocessMaterial;
 
         // Booleans to check on for postprocessing effects
-        bool doomed = false;    // if the player hit a asteroid
-        std::string  normalPath, doomPath; 
+        bool doomed = false; // if the player hit a asteroid
+        std::string normalPath, doomPath;
 
     public:
         // Initialize the renderer including the sky and the Postprocessing objects.
@@ -99,7 +99,7 @@ namespace our
         void destroy();
         // This function should be called every frame to draw the given world
         void render(World *world);
-        
+
         // Set Doom effect
         void setDoomed(bool doom) { this->doomed = doom; }
     };
