@@ -78,10 +78,7 @@ class Winstate: public our::State {
         // Get a reference to the keyboard object
         auto& keyboard = getApp()->getKeyboard();
 
-        if(keyboard.justPressed(GLFW_KEY_SPACE)){
-            // If the space key is pressed in this frame, go to the play state
-            getApp()->changeState("play");
-        } else if(keyboard.justPressed(GLFW_KEY_ESCAPE)) {
+        if(keyboard.justPressed(GLFW_KEY_ESCAPE)) {
             // If the escape key is pressed in this frame, exit the game
             getApp()->changeState("menu");
         }
