@@ -308,11 +308,15 @@ namespace our
         for (auto command : transparentCommands)
         {
             command.material->setup();
+            // Send local to world matrix, its inverse transform of the rendered object to the light.vert
+            // camera position, VP matrix
+            // To calculate view vector, normal to the vertex, and its position
             command.material->shader->set("M", command.localToWorld);
             command.material->shader->set("M_I_T", glm::transpose(glm::inverse(command.localToWorld)));
             glm::vec4 eye = camera->getOwner()->getLocalToWorldMatrix() * glm::vec4(0, 0, 0, 1);    // (0,0,0) position of camera in its local space, 1 for point
             command.material->shader->set("camera_position", glm::vec3(eye));
             command.material->shader->set("VP", VP );
+
             LightObject::setup(command, lights);
             // This matrix is used by the shader to transform the object's vertices from world space to clip space
             command.material->shader->set("transform", VP * command.localToWorld);
