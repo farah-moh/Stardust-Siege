@@ -24,6 +24,10 @@
                 "textured":{
                     "vs":"assets/shaders/textured.vert",
                     "fs":"assets/shaders/textured.frag"
+                },
+                "lit":{
+                    "vs":"assets/shaders/light.vert",
+                    "fs":"assets/shaders/light.frag"
                 }
             },
             "textures":{
@@ -186,6 +190,24 @@
                                 "type": "Mesh Renderer",
                                 "mesh": "player",
                                 "material": "player"
+                            }
+                        ],
+                        "children": [
+                            {
+                                "name": "light",
+                                "position": [0, 0, 0],
+                                "rotation": [0, -90, 0],
+                                "components": [
+                                    {
+                                        "type": "Light",
+                                        "lightType": "spot",
+                                        "cone": [90, 10],
+                                        "specular": [0.7, 0.7, 0.7],
+                                        "diffuse": [0.8, 0.8, 0.8],
+                                        "ambient": [0.0, 0.0, 0.0],
+                                        "attenuation": [1, 0, 0]
+                                    }
+                                ]
                             }
                         ]
                     }
