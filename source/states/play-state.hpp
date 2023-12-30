@@ -9,11 +9,16 @@
 #include <systems/asteroids-generator.hpp>
 #include <systems/movement.hpp>
 #include <asset-loader.hpp>
+#include <irrKlang.h>
+using namespace irrklang;
 
 // This state shows how to use the ECS framework and deserialization.
 class Playstate: public our::State {
     float doomTime = 0.0;
     float shakeTime = 0.0;
+
+    ISoundEngine *DJAmro7a7a = nullptr;
+
     our::World world;
     our::ForwardRenderer renderer;
     our::FreeCameraControllerSystem cameraController;
@@ -26,6 +31,11 @@ class Playstate: public our::State {
     }
 
     void onInitialize() override {
+
+        // Initialize the sound engine
+        DJAmro7a7a = createIrrKlangDevice();
+        DJAmro7a7a->setSoundVolume(0.3f); 
+
         // First of all, we get the scene configuration from the app config
         auto& config = getApp()->getConfig()["scene"];
         // If we have assets in the scene config, we deserialize them
@@ -66,21 +76,21 @@ class Playstate: public our::State {
         // ################# Postprocessing Effects #################
         // shake effect on collision spaceship with asteroid
         if(collision.bulletCollide && !getApp()->getTimer()) {
-            // renderer.setDoomed(false);   // Set the renderer to Doom mode
-            renderer.setShaken(true);   // Set the renderer to Doom mode
-            getApp()->setTimer(true);   // Set the timer (to start the countdown, and to make sure no doom mode is set again)
-            shakeTime = glfwGetTime();          // The start time of the doom mode
-            getApp()->setCountdownTime(shakeTime);  // Set the countdown time (to be used in application class)   
+            DJAmro7a7a->play2D("assets/sounds/explosion.mp3", false, false, true);
+            renderer.setShaken(true); 
+            getApp()->setTimer(true);   
+            shakeTime = glfwGetTime();          
+            getApp()->setCountdownTime(shakeTime);    
         }
 
         // Doom effect on collision spaceship with asteroid
         if(collision.spaceshipCollide) {
+            DJAmro7a7a->play2D("assets/sounds/gethit.mp3", false, false, true);
             if(!getApp()->getTimer()) {
-                // renderer.setShaken(false);   // Set the renderer to Doom mode
-                renderer.setDoomed(true);   // Set the renderer to Doom mode
-                getApp()->setTimer(true);   // Set the timer (to start the countdown, and to make sure no doom mode is set again)
-                doomTime = glfwGetTime();          // The start time of the doom mode
-                getApp()->setCountdownTime(doomTime);  // Set the countdown time (to be used in application class)   
+                renderer.setDoomed(true);
+                getApp()->setTimer(true);   
+                doomTime = glfwGetTime();
+                getApp()->setCountdownTime(doomTime);
             }
             if(cameraController.shielded) {
                 cameraController.shielded = false;
@@ -91,13 +101,11 @@ class Playstate: public our::State {
         // Check if the timer of shaken effect lasted 0.5 seconds
         if ((glfwGetTime()  > (0.5f + shakeTime)) && renderer.getShaked()) {
             getApp()->setTimer(false);
-            // getApp()->setCountdown(2);
             renderer.setShaken(false);
         }
         // Check if the timer of doom effect lasted 0.5 seconds
         if ((glfwGetTime()  > (0.5f + doomTime)) && getApp()->getTimer()) {
             getApp()->setTimer(false);
-            // getApp()->setCountdown(2);
             renderer.setDoomed(false);
         }
 

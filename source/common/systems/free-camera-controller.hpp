@@ -12,6 +12,9 @@
 #include <glm/gtx/fast_trigonometry.hpp>
 #include "../../states/play-state.hpp"
 
+#include <irrKlang.h>
+using namespace irrklang;
+
 namespace our
 {
 
@@ -23,6 +26,7 @@ namespace our
         bool mouse_locked = false; // Is the mouse locked
         nlohmann::json shield;
         Entity* shieldEnt;
+        ISoundEngine *DJAmro7a7a = nullptr;
 
     public:
         // When a state enters, it should call this function and give it the pointer to the application
@@ -30,6 +34,8 @@ namespace our
         void enter(Application* app, nlohmann::json shield){
             this->app = app;
             this->shield = shield;
+            DJAmro7a7a = createIrrKlangDevice();
+            DJAmro7a7a->setSoundVolume(0.3f); 
         }
 
         // This should be called every frame to update all entities containing a FreeCameraControllerComponent 
@@ -111,6 +117,7 @@ namespace our
             if(app->getKeyboard().isPressed(GLFW_KEY_R)) position = glm::vec3(0, 0, 10);
             // apply powerup
             if(app->getKeyboard().isPressed(GLFW_KEY_F) && score >= 1 && !shielded) {
+                DJAmro7a7a->play2D("assets/sounds/shield.mp3", false, false, true);
                 score--;
                 shieldEnt = world->addEntityAndDeserialize(shield, entity);
                 auto position = player->localTransform.position;
@@ -120,6 +127,7 @@ namespace our
             }
 
             if(app->getKeyboard().isPressed(GLFW_KEY_SPACE)) {
+                DJAmro7a7a->play2D("assets/sounds/bullet2.0.mp3", false, false, true);
                 auto config = app->getConfig();
                 // get the bullet config
                 auto bulletJson = config["scene"]["runtimeEntity"][0];
