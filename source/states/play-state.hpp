@@ -108,6 +108,10 @@ class Playstate: public our::State {
             getApp()->changeState("lose");
         }
 
+        if(getApp()->getScore() >= 10) {
+            getApp()->changeState("win");
+        }
+
         // Get a reference to the keyboard object
         auto& keyboard = getApp()->getKeyboard();
 

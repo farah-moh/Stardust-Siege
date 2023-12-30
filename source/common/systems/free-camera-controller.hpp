@@ -111,7 +111,7 @@ namespace our
             if(app->getKeyboard().isPressed(GLFW_KEY_R)) position = glm::vec3(0, 0, 10);
             // apply powerup
             if(app->getKeyboard().isPressed(GLFW_KEY_F) && score >= 1 && !shielded) {
-                score --;
+                score--;
                 shieldEnt = world->addEntityAndDeserialize(shield, entity);
                 auto position = player->localTransform.position;
                 shieldEnt->localTransform.position = {position[0]+0.03,position[1]+0.12,position[2]+1.2};

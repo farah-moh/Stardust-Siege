@@ -78,7 +78,7 @@ namespace our
                     // return to initial position
                     playerCenter = glm::vec3(0, 0, 10);
                     world->markForRemoval(asteroid);
-                    if(!shielded) score-=3;
+                    if(!shielded) score-=2;
                     spaceshipCollide = true;
                 }
             }
