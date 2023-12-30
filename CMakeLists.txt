@@ -87,6 +87,7 @@ set(COMMON_SOURCES
         source/common/systems/free-camera-controller.hpp
         source/common/systems/movement.hpp
         source/common/systems/collision.hpp
+        source/common/systems/boss-collision.hpp
         source/common/systems/asteroids-generator.hpp
 )
 
@@ -108,6 +109,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${PROJECT_SOURCE_DIR}/bin)
 
 set(STATES_SOURCES
         source/states/play-state.hpp
+        source/states/boss-state.hpp
         source/states/menu-state.hpp
         source/states/lose-state.hpp
         source/states/win-state.hpp

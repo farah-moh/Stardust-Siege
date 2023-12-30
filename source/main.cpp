@@ -7,9 +7,11 @@
 
 #include "states/menu-state.hpp"
 #include "states/play-state.hpp"
+#include "states/boss-state.hpp"
 #include "states/lose-state.hpp"
 #include "states/win-state.hpp"
 #include "states/help-state.hpp"
+#include "states/mid-state.hpp"
 
 
 int main(int argc, char** argv) {
@@ -39,6 +41,8 @@ int main(int argc, char** argv) {
     // Register all the states of the project in the application
     app.registerState<Menustate>("menu");
     app.registerState<Playstate>("play");
+    app.registerState<Bossstate>("boss");
+    app.registerState<Midstate>("mid");
     app.registerState<Losestate>("lose");
     app.registerState<Winstate>("win");
     app.registerState<Helpstate>("help");
