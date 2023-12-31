@@ -1,5 +1,5 @@
 {
-    "start-scene": "menu",
+    "start-scene": "mid",
     "window":
     {
         "title":"Stardust Siege",
@@ -623,8 +623,8 @@
                     "sampler": "default"
                 },
                 "ufo":{
-                    "type": "textured",
-                    "shader": "textured",
+                    "type": "lit",
+                    "shader": "lit",
                     "pipelineState": {
                         "faceCulling":{
                             "enabled": false
@@ -633,8 +633,9 @@
                             "enabled": true
                         }
                     },
-                    "tint": [1, 1, 1, 1],
-                    "texture": "ufo",
+                    "specular":"monkey-specular-rough",
+                    "roughness":"monkey-roughness-rough",
+                    "albedo": "ufo",
                     "sampler": "default"
                 }
             }
@@ -769,6 +770,22 @@
                     "type": "Movement",
                     "angularVelocity": [0, 0, 0]
                 }
+                ]
+            },
+            {
+                "name": "light",
+                "position": [0, 20, -100],
+                "rotation": [-90, 0, 0],
+                "components": [
+                    {
+                        "type": "Light",
+                        "lightType": "spot",
+                        "cone": [180, 30],
+                        "specular": [10,10,10],
+                        "diffuse": [10,10,10],
+                        "ambient": [0.2,0.2,0.2],
+                        "attenuation": [0, 1, 0]
+                    }
                 ]
             }
         ],
