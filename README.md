@@ -1,5 +1,5 @@
 
-# Stardust Sieage Game 🚀
+# Stardust Siege Game 🚀
 ![Alt text](image-2.png)
 Our game is a 3D space shooter game. It contains 2 levels.
 ## First level 🌌
