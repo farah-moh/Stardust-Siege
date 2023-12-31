@@ -11,12 +11,14 @@
 
 #include <functional>
 #include <array>
+#include <irrKlang.h>
+using namespace irrklang;
 
 using namespace std;
 
 // This state shows how to use some of the abstractions we created to make a menu.
 class Midstate: public our::State {
-
+    ISoundEngine *DJAmro7a7a = nullptr;
     // A meterial holding the menu shader and the menu texture to draw
     our::TexturedMaterial* menuMaterial;
     // A material to be used to highlight hovered buttons (we will use blending to create a negative effect).
@@ -30,6 +32,9 @@ class Midstate: public our::State {
         return "mid";
     }
     void onInitialize() override {
+        DJAmro7a7a = createIrrKlangDevice();
+        DJAmro7a7a->setSoundVolume(0.3f); 
+        DJAmro7a7a->play2D("assets/sounds/win.wav", false, false, true);
         // First, we create a material for the menu's background
         menuMaterial = new our::TexturedMaterial();
         // Here, we load the shader that will be used to draw the background

@@ -125,7 +125,7 @@ namespace our
                 // tilting logic
                 if (playerRotation.x > -1.0) {
                     isRotating = true;
-                    playerRotation.x -= 0.1f;
+                    playerRotation.x -= 0.05f;
                 }
             }
             if(app->getKeyboard().isPressed(GLFW_KEY_A)) {
@@ -133,7 +133,7 @@ namespace our
                 // tilting logic
                 if (playerRotation.x < 1.0) {
                     isRotating = true;
-                    playerRotation.x += 0.1f;
+                    playerRotation.x += 0.05f;
                 }
             }
             // return to initial position
@@ -171,11 +171,11 @@ namespace our
                 }
                 if (playerRotation.x > 0)
                 {
-                    playerRotation.x -= 0.1f;
+                    playerRotation.x -= 0.05f;
                 }
                 else if (playerRotation.x < 0)
                 {
-                    playerRotation.x += 0.1f;
+                    playerRotation.x += 0.05f;
                 }
 
                 if (playerRotation.z < 0.1 && playerRotation.z > -0.1)

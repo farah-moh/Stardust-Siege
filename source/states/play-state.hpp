@@ -35,7 +35,7 @@ class Playstate: public our::State {
         // Initialize the sound engine
         DJAmro7a7a = createIrrKlangDevice();
         DJAmro7a7a->setSoundVolume(0.3f); 
-
+        DJAmro7a7a->play2D("assets/sounds/background.mp3", false, false, true);
         // First of all, we get the scene configuration from the app config
         auto& config = getApp()->getConfig()["scene"];
         // If we have assets in the scene config, we deserialize them
@@ -112,10 +112,12 @@ class Playstate: public our::State {
                 
         getApp()->setScore(collision.score);
         if(getApp()->getScore() < 0) {
+            DJAmro7a7a->play2D("assets/sounds/lose.wav", false, false, true);
             getApp()->changeState("lose");
         }
 
         if(getApp()->getScore() >= 10) {
+            DJAmro7a7a->play2D("assets/sounds/win.wav", false, false, true);
             getApp()->changeState("mid");
         }
 
@@ -138,5 +140,10 @@ class Playstate: public our::State {
         world.clear();
         // and we delete all the loaded assets to free memory on the RAM and the VRAM
         our::clearAllAssets();
+        if (DJAmro7a7a)
+        {
+            DJAmro7a7a->stopAllSounds();
+            DJAmro7a7a->drop();
+        }
     }
 };

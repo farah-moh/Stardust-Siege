@@ -10,11 +10,16 @@
 #include <systems/asteroids-generator.hpp>
 #include <systems/movement.hpp>
 #include <asset-loader.hpp>
+#include <irrKlang.h>
+using namespace irrklang;
 
 // This state shows how to use the ECS framework and deserialization.
 class Bossstate: public our::State {
     float doomTime = 0.0;
     float shakeTime = 0.0;
+
+    ISoundEngine *DJAmro7a7a = nullptr;
+
     our::World world;
     our::ForwardRenderer renderer;
     our::FreeCameraControllerSystem cameraController;
@@ -27,6 +32,10 @@ class Bossstate: public our::State {
     }
 
     void onInitialize() override {
+        // Initialize the sound engine
+        DJAmro7a7a = createIrrKlangDevice();
+        DJAmro7a7a->setSoundVolume(0.3f); 
+        DJAmro7a7a->play2D("assets/sounds/actionBackground.mp3", false, false, true);
         // First of all, we get the scene configuration from the app config
         auto& config = getApp()->getConfig()["boss"];
         // If we have assets in the scene config, we deserialize them
@@ -64,6 +73,7 @@ class Bossstate: public our::State {
         // ################# Postprocessing Effects #################
         // shake effect on collision spaceship with asteroid
         if(collision.bossCollide && !getApp()->getTimer()) {
+            DJAmro7a7a->play2D("assets/sounds/explosion.mp3", false, false, true);
             // renderer.setDoomed(false);   // Set the renderer to Doom mode
             renderer.setShaken(true);   // Set the renderer to Doom mode
             getApp()->setTimer(true);   // Set the timer (to start the countdown, and to make sure no doom mode is set again)
@@ -73,7 +83,9 @@ class Bossstate: public our::State {
 
         // Doom effect on collision spaceship with asteroid
         if(collision.spaceshipCollide) {
+            DJAmro7a7a->play2D("assets/sounds/gethit.mp3", false, false, true);
             if(!getApp()->getTimer()) {
+
                 // renderer.setShaken(false);   // Set the renderer to Doom mode
                 renderer.setDoomed(true);   // Set the renderer to Doom mode
                 getApp()->setTimer(true);   // Set the timer (to start the countdown, and to make sure no doom mode is set again)
@@ -103,10 +115,12 @@ class Bossstate: public our::State {
         getApp()->setPlayerHealth(collision.playerHealth);
 
         if(getApp()->getBossHealth() < 0) {
+            DJAmro7a7a->play2D("assets/sounds/win.wav", false, false, true);
             getApp()->changeState("win");
         }
 
         if(getApp()->getPlayerHealth() < 0) {
+            DJAmro7a7a->play2D("assets/sounds/lose.wav", false, false, true);
             getApp()->changeState("lose");
         }
 
@@ -130,5 +144,10 @@ class Bossstate: public our::State {
         world.clear();
         // and we delete all the loaded assets to free memory on the RAM and the VRAM
         our::clearAllAssets();
+        if (DJAmro7a7a)
+        {
+            DJAmro7a7a->stopAllSounds();
+            DJAmro7a7a->drop();
+        }
     }
 };
