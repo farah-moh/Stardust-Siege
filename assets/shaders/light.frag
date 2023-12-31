@@ -8,6 +8,7 @@ in Varyings {
     vec3 normal;
 } fsin;
 
+//Three types of light
 #define TYPE_DIRECTIONAL    0
 #define TYPE_POINT          1
 #define TYPE_SPOT           2
@@ -20,14 +21,16 @@ struct Material {
     float shininess;
 };
 
+// using Phong lightening model where ====> Diffuse + Specular + Ambient  = Phong Reflection
+//use a single struct for all light types.
 struct Light {
     int type;
     //diffuse, specular and ambient are properties that are used by all light types
-    vec3 diffuse;
+    vec3 diffuse; 
     vec3 specular;
-    vec3 ambient;
+    vec3 ambient; 
     //position and attenutation is useful for point and spot lights while direction is useful only for the latter
-    vec3 position, direction;
+    vec3 position, direction; // directional light doesn`t have position
     //(c2, c1, c0) which are factors for d^2, d, 1 where d is the distance from the camera to the point
     vec3 attenuation;
     //(outer_angle, inner_angle)
@@ -36,6 +39,9 @@ struct Light {
     vec2 cone;
 };
 
+//material properties that define diffuse, specular, ambient in addition to its shineness
+//alpha is shineness [0-inf] when alpha increase shinennes increase
+//The more rough the surface, the less shiny it is. Roughness is from 0 to 1 but shininess is from 0 to ∞
 struct LitMaterial {
     sampler2D albedo;
     sampler2D specular;
@@ -45,8 +51,8 @@ struct LitMaterial {
 };
 
 uniform LitMaterial tex_material;
-#define MAX_LIGHT_COUNT 30
-uniform Light lights[MAX_LIGHT_COUNT];
+#define MAX_LIGHT_COUNT 30 // maximum light count we can receive
+uniform Light lights[MAX_LIGHT_COUNT]; //array of light structs for all lights in the scene
 uniform int light_count;
 out vec4 frag_color;
 
@@ -64,22 +70,23 @@ void main() {
     float roughness =  texture(tex_material.roughness, fsin.tex_coord).r;
 
     // It is noteworthy that we clamp the roughness to prevent its value from ever becoming 0 or 1 to prevent lighting artifacts (unexpected behavior).
+    // calculating shininess from roughness
     sampled.shininess = 2.0f/pow(clamp(roughness, 0.001f, 0.999f), 4.0f) - 2.0f;
 
     // Then we normalize the normal and the view. These are done once and reused for every light type.
     vec3 normal = normalize(fsin.normal); // Although the normal was already normalized, it may become shorter during interpolation.
-    vec3 view = normalize(fsin.view);
-    int count = min(light_count, MAX_LIGHT_COUNT);
+    vec3 view = normalize(fsin.view);  //must normalize view after interpolation
+    int count = min(light_count, MAX_LIGHT_COUNT); // Make sure that the actual light count never exceeds the maximum light count.
 
     vec3 accumulated_light = vec3(0.0f);
 
-        //for each light in the scene, we compute it's effect on the pixel
+    //for each light in the scene, we compute it's effect on the pixel
     for(int index = 0; index < count; index++){
         Light light = lights[index];
         vec3 light_direction;
         float attenuation = 1;
         if(light.type == TYPE_DIRECTIONAL)
-            //here the direction of the light is simply the dirction of the directional light
+            //here the direction of the light is simply the direction of the directional light
             light_direction = light.direction;
         else {
             //but for spot and point lights, the light is emitting radially outwards from the light position
@@ -104,8 +111,11 @@ void main() {
         float lambert = max(0.0f, dot(normal, -light_direction));
         float phong = pow(max(0.0f, dot(view, reflected)), sampled.shininess);
 
+          // calculating diffuse part for phong model
         vec3 diffuse = sampled.diffuse * light.diffuse * lambert;
+        // calculating specular part for phong model
         vec3 specular = sampled.specular * light.specular * phong;
+        // calculating ambient part for phong model
         vec3 ambient = sampled.ambient * light.ambient;
         //add the effect of this light to the effects of all prior lights and account for attenuation
         accumulated_light += (diffuse + specular + ambient) * attenuation;
