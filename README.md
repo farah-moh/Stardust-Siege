@@ -15,6 +15,7 @@ A player controls a spaceship and has to shoot down the boss spaceship that fire
 - Move up: Q
 - Move down: E
 - Shoot: Space
+- Respawn: R
 - Shield: F
 
 ## Demo 🎥
